@@ -32,7 +32,7 @@ const themeScript = `(function(){var t;try{t=localStorage.getItem("theme")}catch
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const posts = getAllPosts().map(({ slug, title }) => ({ slug, title }));
   return (
-    <html lang="en" data-theme="dark" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="dark" data-scroll-behavior="smooth" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

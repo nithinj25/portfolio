@@ -8,7 +8,7 @@ import ThemeToggle from "./ThemeToggle";
 import { SearchIcon } from "./icons";
 
 const links = [
-  { href: "/#projects", label: "Projects", match: "" },
+  { href: "/projects", label: "Projects", match: "/projects" },
   { href: "/blog", label: "Blog", match: "/blog" },
 ];
 

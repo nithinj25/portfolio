@@ -1,4 +1,4 @@
-import type { Project } from "@/data/site";
+import type { Project } from "@/lib/projects";
 
 // Small animated diagrams that stand in for screenshots. Each one sketches the
 // idea behind the project using only theme colours.
