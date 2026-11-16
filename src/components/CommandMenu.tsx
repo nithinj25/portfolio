@@ -87,6 +87,11 @@ export default function CommandMenu({ posts, projects }: Props) {
       <Command
         label="Command menu"
         loop
+        // Plain substring matching. cmdk's default fuzzy scoring ranked unrelated
+        // projects above an exact match such as "toggle".
+        filter={(value, search, keywords) =>
+          `${value} ${keywords?.join(" ") ?? ""}`.toLowerCase().includes(search.trim().toLowerCase()) ? 1 : 0
+        }
         role="dialog"
         aria-modal="true"
         className="rise w-full max-w-md overflow-hidden rounded-2xl border border-line bg-card shadow-2xl shadow-black/20"

@@ -101,6 +101,11 @@ body {
   }
 }
 
+/* The command menu's search field is the whole top row, so the caret is its focus cue. */
+[cmdk-input]:focus-visible {
+  outline: none;
+}
+
 /* Command menu group labels (cmdk) */
 [cmdk-group-heading] {
   padding: 0.75rem 0.75rem 0.25rem;
