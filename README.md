@@ -4,22 +4,31 @@ Personal site and blog. Next.js 16, Tailwind CSS 4, Markdown posts. Every page i
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev        # http://localhost:3000 (polls for file changes, so it works on a Windows drive under WSL)
 npm run build      # production build
 ```
 
 ## Editing your details
 
-Everything the site says about you is in [`src/data/site.ts`](src/data/site.ts): name, tagline, bio, stack, projects, hackathons and social links. A few things worth filling in:
+Personal details live in [`src/data/site.ts`](src/data/site.ts) and projects in [`src/lib/projects.ts`](src/lib/projects.ts). Anything still missing is marked `TODO` in those files and shows as a dashed placeholder on the page:
 
 | Field | What it does |
 |---|---|
 | `url` | Your real domain. Used for link previews, RSS and the sitemap. |
 | `avatar` | Put a photo in `public/` and set its path (e.g. `/avatar.jpg`). Until then the site shows your initials. |
-| `resume` | Put a PDF in `public/` and set its path to show a résumé button. |
-| `socials.linkedin`, `socials.x` | Leave empty to hide the icon. |
-| `experience` | Empty for now, so the section is hidden. Add a role and it appears. |
+| `resume` | Put a PDF in `public/` and set its path. Until then the résumé icon is a dashed TODO. |
+| `socials.linkedin`, `socials.x` | Profile URLs. Empty ones show as dashed TODO icons. |
+| `experience` | Empty for now, so the section shows one TODO row. Add roles, newest first. |
+| `achievements` | Rows with title, organisation and year. Add a `logo` path to replace the initial. |
 | `showGithubActivity` | Set to `true` for a contribution heatmap. It is loaded from a third-party API using your GitHub username. |
+
+### Projects
+
+Each entry in `src/lib/projects.ts` drives its home page card, its card on `/projects` and its own page at `/projects/<slug>`.
+
+- `featured: true` puts it on the home page.
+- `image: "/projects/<slug>.png"` shows a screenshot (put the file in `public/projects/`). Without one, the card shows its diagram or a TODO slot.
+- `details` is the bullet list on the project page. Without it, that page shows a TODO.
 
 ## Writing a blog post
 
@@ -52,8 +61,9 @@ Push this folder to its own GitHub repository and import it on [Vercel](https://
 
 ```
 content/blog/        posts (Markdown)
-src/data/site.ts     all personal content
-src/app/             pages: home, /blog, /blog/[slug], rss.xml, sitemap
-src/components/      Banner (pixel landscape), CommandMenu, ProjectArt, …
+src/data/site.ts     personal content: bio, stack, experience, achievements
+src/lib/projects.ts  every project
+src/app/             pages: home, /projects, /projects/[slug], /blog, /blog/[slug], rss.xml, sitemap
+src/components/      Banner and StarMargins (canvases), CommandMenu, ProjectCard, …
 src/app/globals.css  colours, fonts and blog typography
 ```
