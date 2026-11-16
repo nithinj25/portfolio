@@ -10,7 +10,8 @@ import { useEffect, useRef, useState } from "react";
 const COLUMN_HALF = 460; // keep everything out of the 800px column plus a gutter
 const REACH = 150; // cursor influence radius, px
 const CATCH_RADIUS = 38;
-const SCORE_KEY = "comets-caught";
+export const SCORE_KEY = "comets-caught";
+export const COMET_CAUGHT = "comet-caught";
 
 type Star = { x: number; y: number; size: number; depth: number; phase: number; speed: number; ox: number; oy: number; glow: number };
 type Comet = { x: number; y: number; vx: number; vy: number };
@@ -210,6 +211,8 @@ export default function StarMargins() {
       pops.push({ x: c.x, y: c.y, born });
       caught += 1;
       setScore(caught);
+      // The footer campsite listens for this and reacts (see FooterScene).
+      window.dispatchEvent(new CustomEvent(COMET_CAUGHT, { detail: caught }));
       try {
         localStorage.setItem(SCORE_KEY, String(caught));
       } catch {}
