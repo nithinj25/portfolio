@@ -7,6 +7,7 @@ import "./globals.css";
 import CommandMenu from "@/components/CommandMenu";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
+import StarMargins from "@/components/StarMargins";
 import { site } from "@/data/site";
 import { getAllPosts } from "@/lib/posts";
 
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <StarMargins />
         <Nav />
         <main id="main" className="mx-auto max-w-[680px] px-5">
           {children}
