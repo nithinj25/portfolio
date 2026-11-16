@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ScrollProgress />
         <StarMargins />
         <Nav />
-        <main id="main" className="mx-auto max-w-[680px] px-5">
+        <main id="main" className="mx-auto max-w-[800px] px-5">
           {children}
         </main>
         <Footer />

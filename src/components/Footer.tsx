@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { site } from "@/data/site";
+import FooterScene from "./FooterScene";
 import { RssIcon } from "./icons";
 
 export default function Footer() {
   return (
-    <footer className="mx-auto mt-24 max-w-[680px] px-5 pb-10">
+    <footer className="mt-24">
+      <div className="mx-auto max-w-[800px] px-5">
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6 text-sm text-muted">
         <p>
           © {new Date().getFullYear()} {site.name}
@@ -21,6 +23,8 @@ export default function Footer() {
           </a>
         </div>
       </div>
+      </div>
+      <FooterScene />
     </footer>
   );
 }

@@ -42,7 +42,7 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-40 bg-bg/80 backdrop-blur-md">
-      <nav aria-label="Main" className="mx-auto flex h-14 max-w-[680px] items-center justify-between px-5">
+      <nav aria-label="Main" className="mx-auto flex h-14 max-w-[800px] items-center justify-between px-5">
         <Link href="/" className="font-serif text-xl italic tracking-tight" aria-label={`${site.name}, home`}>
           {site.name.toLowerCase()}
           <span className="text-accent">.</span>
