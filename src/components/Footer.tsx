@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { site } from "@/data/site";
-import FooterScene from "./FooterScene";
 import { RssIcon } from "./icons";
 
 export default function Footer() {
@@ -24,7 +23,6 @@ export default function Footer() {
         </div>
       </div>
       </div>
-      <FooterScene />
     </footer>
   );
 }

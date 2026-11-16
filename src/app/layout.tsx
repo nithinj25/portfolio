@@ -7,7 +7,7 @@ import "./globals.css";
 import CommandMenu from "@/components/CommandMenu";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
-import StarMargins from "@/components/StarMargins";
+import WorldBackdrop from "@/components/WorldBackdrop";
 import { site } from "@/data/site";
 import { ScrollProgress } from "@/components/widgets";
 import { getAllPosts } from "@/lib/posts";
@@ -47,12 +47,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <ScrollProgress />
-        <StarMargins />
+        <WorldBackdrop />
         <Nav />
-        <main id="main" className="mx-auto max-w-[800px] px-5">
-          {children}
-        </main>
-        <Footer />
+        {/* The veil keeps text readable over the backdrop; the scene shows in full beside and below it. */}
+        <div className="veil">
+          <main id="main" className="mx-auto max-w-[800px] px-5">
+            {children}
+          </main>
+          <Footer />
+        </div>
+        {/* Room at the end of every page for the landing: the campsite, unobstructed. */}
+        <div aria-hidden className="h-[44vh]" />
         <CommandMenu posts={posts} projects={projects.map(({ slug, title, tagline }) => ({ slug, title, tagline }))} />
       </body>
     </html>

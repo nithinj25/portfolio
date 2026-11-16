@@ -84,6 +84,26 @@ body {
   }
 }
 
+/* A soft band of page colour behind the content column, so text stays readable
+   over the pixel backdrop. It fades out at the sides and at the bottom. */
+.veil {
+  position: relative;
+  isolation: isolate;
+  margin-inline: auto;
+  max-width: 1040px;
+  padding-bottom: 7rem;
+}
+.veil::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  --veil: color-mix(in oklab, var(--bg) 90%, transparent);
+  background: linear-gradient(90deg, transparent, var(--veil) 11%, var(--veil) 89%, transparent);
+  mask-image: linear-gradient(to bottom, black calc(100% - 9rem), transparent);
+}
+
 /* Scroll reveal (see <Reveal>): hidden until it enters the viewport, then stays. */
 .reveal {
   opacity: 0;
