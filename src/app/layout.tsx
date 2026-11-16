@@ -9,7 +9,9 @@ import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import StarMargins from "@/components/StarMargins";
 import { site } from "@/data/site";
+import { ScrollProgress } from "@/components/widgets";
 import { getAllPosts } from "@/lib/posts";
+import { projects } from "@/lib/projects";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -44,13 +46,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <ScrollProgress />
         <StarMargins />
         <Nav />
         <main id="main" className="mx-auto max-w-[680px] px-5">
           {children}
         </main>
         <Footer />
-        <CommandMenu posts={posts} />
+        <CommandMenu posts={posts} projects={projects.map(({ slug, title, tagline }) => ({ slug, title, tagline }))} />
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ComponentProps } from "react";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 import { site } from "@/data/site";
 
 /** A card whose soft glow follows the cursor (see `.spot` in globals.css). */
@@ -15,6 +15,30 @@ export function Spotlight({ className = "", ...props }: ComponentProps<"div">) {
         e.currentTarget.style.setProperty("--my", `${e.clientY - b.top}px`);
       }}
     />
+  );
+}
+
+/** Fades and slides its children up, once, the first time they scroll into view. */
+export function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        el.classList.add("in");
+        io.disconnect();
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={`reveal ${className}`}>
+      {children}
+    </div>
   );
 }
 
@@ -56,8 +80,8 @@ export function CopyEmail({ className = "" }: { className?: string }) {
   );
 }
 
-/** Thin bar at the top of a post that fills as you read. */
-export function ReadingProgress() {
+/** Thin bar at the top of every page that fills as you scroll. */
+export function ScrollProgress() {
   const [p, setP] = useState(0);
   useEffect(() => {
     const onScroll = () => {
@@ -69,7 +93,7 @@ export function ReadingProgress() {
     return () => removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <div aria-hidden className="fixed inset-x-0 top-0 z-50 h-0.5">
+    <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-50 h-0.5">
       <div className="h-full origin-left bg-accent" style={{ transform: `scaleX(${p})` }} />
     </div>
   );

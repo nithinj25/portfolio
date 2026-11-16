@@ -84,6 +84,33 @@ body {
   }
 }
 
+/* Scroll reveal (see <Reveal>): hidden until it enters the viewport, then stays. */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+@media (scripting: none) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Command menu group labels (cmdk) */
+[cmdk-group-heading] {
+  padding: 0.75rem 0.75rem 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
 /* Theme switch: the new theme wipes in as a circle from the toggle. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -267,6 +294,11 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
   .rise,
   .art-grow,

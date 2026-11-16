@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "@/components/icons";
-import { ReadingProgress } from "@/components/widgets";
 import { site } from "@/data/site";
 import { formatDate, getAllPosts, getPost } from "@/lib/posts";
 
@@ -44,7 +43,6 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <article className="pt-10">
-      <ReadingProgress />
       <Link href="/blog" className="rise inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-fg">
         <ArrowLeft width={14} height={14} /> All posts
       </Link>

@@ -3,7 +3,7 @@ import Banner from "@/components/Banner";
 import PostList from "@/components/PostList";
 import ProjectCard from "@/components/ProjectCard";
 import { FileIcon, GithubIcon, LinkedinIcon, MailIcon, PinIcon, XIcon } from "@/components/icons";
-import { CopyEmail, GithubActivity, LocalTime, Spotlight } from "@/components/widgets";
+import { CopyEmail, GithubActivity, LocalTime, Reveal, Spotlight } from "@/components/widgets";
 import { about, experience, focus, highlights, site, stack } from "@/data/site";
 import { featuredProjects, projects } from "@/lib/projects";
 import { getAllPosts } from "@/lib/posts";
@@ -21,13 +21,15 @@ function Section({
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="mt-20 scroll-mt-20">
-      <div className="mb-6 flex items-baseline justify-between gap-4">
-        <h2 id={`${id}-title`} className="font-serif text-[1.75rem] leading-none tracking-tight">
-          {title}
-        </h2>
-        {aside}
-      </div>
-      {children}
+      <Reveal>
+        <div className="mb-6 flex items-baseline justify-between gap-4">
+          <h2 id={`${id}-title`} className="font-serif text-[1.75rem] leading-none tracking-tight">
+            {title}
+          </h2>
+          {aside}
+        </div>
+        {children}
+      </Reveal>
     </section>
   );
 }
@@ -145,9 +147,14 @@ export default function Home() {
           {stack.map((row) => (
             <div key={row.group} className="grid gap-2 py-3 sm:grid-cols-[7rem_1fr] sm:items-center">
               <dt className="font-mono text-[11px] uppercase tracking-widest text-faint">{row.group}</dt>
-              <dd className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+              <dd className="flex flex-wrap gap-x-4 gap-y-0.5 text-sm">
                 {row.items.map((item) => (
-                  <span key={item}>{item}</span>
+                  <span
+                    key={item}
+                    className="-mx-1.5 cursor-default rounded-md px-1.5 py-0.5 transition-colors duration-200 hover:bg-accent/10 hover:text-accent"
+                  >
+                    {item}
+                  </span>
                 ))}
               </dd>
             </div>
@@ -231,7 +238,7 @@ export default function Home() {
       {/* ── Writing ──────────────────────────────────────── */}
       {posts.length > 0 && (
         <Section
-          id="writing"
+          id="blog"
           title="Writing"
           aside={
             <Link href="/blog" className="link text-sm text-muted hover:text-fg">
