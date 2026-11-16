@@ -47,6 +47,18 @@ const SCENES = {
     smoke: "200,196,220",
     cold: [170, 215, 255],
     hot: [255, 165, 85],
+    sky: ["#0d0e22", "#111433", "#181c4a"],
+    planet: ["#3d3270", "#5b4a9e", "#7a63c4"],
+    ring: "#c9b8ff",
+    craft: "#b9c0d6",
+    craftDark: "#6f7690",
+    balloons: [
+      ["#e2521d", "#ffb347"],
+      ["#7a63c4", "#c9b8ff"],
+      ["#2f8f83", "#9be0cf"],
+    ],
+    basket: "#3a2a22",
+    line: "200,210,255",
   },
   light: {
     glow: ["#dcebf8", "#cfe6f8", "#f3ead6", "#fbe3bf"],
@@ -61,10 +73,22 @@ const SCENES = {
     star: "70,85,110",
     caught: "217,72,26",
     cloud: "#ffffff",
-    cloudEdge: "#cfe0f0",
+    cloudEdge: "#b9d1ea",
     smoke: "120,130,145",
     cold: [70, 130, 205],
     hot: [217, 72, 26],
+    sky: ["#e9f1f9", "#d6e6f6", "#bfd7f1"],
+    planet: ["#b4c9e0", "#cfdded", "#cfdded"],
+    ring: "",
+    craft: "#ffffff",
+    craftDark: "#9fb4cc",
+    balloons: [
+      ["#e2553a", "#ffd0a8"],
+      ["#3f7fc4", "#cfe3f7"],
+      ["#e0a020", "#fff0b8"],
+    ],
+    basket: "#5a3a2a",
+    line: "90,120,160",
   },
 };
 
@@ -94,7 +118,7 @@ export default function WorldBackdrop() {
 
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const make = () => document.createElement("canvas");
-    const layers = { glow: make(), far: make(), mid: make(), near: make() };
+    const layers = { sky: make(), glow: make(), far: make(), mid: make(), near: make() };
     let theme: keyof typeof SCENES = "dark";
     let W = 0;
     let H = 0;
@@ -153,6 +177,19 @@ export default function WorldBackdrop() {
         oy: 0,
         glow: 0,
       }));
+
+      // High-altitude tint: a band of colour at the top of the screen, dithered down into the page.
+      const sk = layers.sky.getContext("2d")!;
+      const band = H * 0.55;
+      for (let y = 0; y < band; y++) {
+        const t = Math.pow(1 - y / band, 1.25) * s.sky.length;
+        for (let x = 0; x < W; x++) {
+          const level = Math.min(s.sky.length, Math.floor(t) + (t - Math.floor(t) > (BAYER[y % 4][x % 4] + 0.5) / 16 ? 1 : 0));
+          if (level < 1) continue;
+          sk.fillStyle = s.sky[level - 1];
+          sk.fillRect(x, y, 1, 1);
+        }
+      }
 
       // Horizon glow, dithered up into the page colour.
       const g = layers.glow.getContext("2d")!;
@@ -237,6 +274,11 @@ export default function WorldBackdrop() {
 
       ctx.clearRect(0, 0, W, H);
 
+      // The upper sky is strongest at the top of the page and thins out as you drop.
+      ctx.globalAlpha = 1 - e * 0.75;
+      ctx.drawImage(layers.sky, 0, 0);
+      ctx.globalAlpha = 1;
+
       // ── Stars: slide up as the camera drops, and fade towards the horizon ──
       const fadeLine = H * 0.3 + farOff;
       const drawStar = (x: number, y: number, rgb: string, a: number, big: boolean) => {
@@ -271,19 +313,155 @@ export default function WorldBackdrop() {
       }
       if (reduce) return;
 
-      // ── Clouds: a band you fall through around the middle of the page ──
-      for (let i = 0; i < 11; i++) {
-        const w = 26 + Math.floor(hash(i + 3) * 44);
-        const worldY = H * (1.05 + hash(i * 5 + 1) * 1.5);
-        const y = Math.round(worldY - e * H * 2.9);
-        if (y < -8 || y > H + 4) continue;
-        const x = Math.round(((hash(i * 9 + 4) * (W + 80) + t * (1.5 + hash(i) * 2.5)) % (W + 80)) - 40);
+      // ── Up high: a ringed planet by night, a pale daytime moon by day ──
+      {
+        const px = Math.round(W * 0.13);
+        const py = Math.round(H * 0.3 - e * H * 0.55);
+        const R = 12;
+        if (py > -R - 8) {
+          for (let y = -R; y <= R; y++)
+            for (let x = -R; x <= R; x++) {
+              if (x * x + y * y > R * R) continue;
+              // Horizontal bands, with a darker limb on the lower right.
+              const shade = x + y > R * 0.9 ? 0 : s.ring ? Math.floor((y + R + Math.sin(x * 0.5) * 1.2) / 5) % 3 : 1;
+              ctx.fillStyle = s.planet[shade];
+              ctx.fillRect(px + x, py + y, 1, 1);
+            }
+          if (s.ring) {
+            ctx.fillStyle = s.ring;
+            for (let a = 0; a < Math.PI * 2; a += 0.04) {
+              const rx = Math.cos(a) * 21;
+              const ry = Math.sin(a) * 5 - rx * 0.18;
+              // The far half of the ring passes behind the planet.
+              if (Math.sin(a) < 0 && rx * rx + ry * ry < R * R) continue;
+              ctx.fillRect(Math.round(px + rx), Math.round(py + ry), 1, 1);
+            }
+          } else {
+            ctx.fillStyle = s.planet[0];
+            ctx.fillRect(px - 5, py - 3, 3, 2);
+            ctx.fillRect(px + 2, py + 4, 2, 2);
+            ctx.fillRect(px + 3, py - 6, 2, 1);
+          }
+        }
+      }
+
+      // ── Constellations (night only): dotted lines between a few bright stars ──
+      if (theme === "dark" && e < 0.8) {
+        const shapes = [
+          { x: 0.2, y: 0.62, pts: [[0, 0], [9, -6], [20, -4], [27, -13], [38, -10]] },
+          { x: 0.8, y: 0.2, pts: [[0, 0], [8, 7], [19, 5], [24, 15], [13, 20], [8, 7]] },
+          { x: 0.86, y: 0.7, pts: [[0, 0], [11, -3], [16, -12], [27, -9]] },
+        ];
+        const fade = 1 - e / 0.8;
+        for (const sh of shapes) {
+          const bx = W * sh.x;
+          const by = H * sh.y - e * H * 0.7;
+          for (let i = 0; i < sh.pts.length; i++) {
+            const [x0, y0] = sh.pts[i];
+            const next = sh.pts[i + 1];
+            if (next) {
+              const steps = Math.hypot(next[0] - x0, next[1] - y0);
+              ctx.fillStyle = `rgba(${s.line},${0.3 * fade})`;
+              for (let k = 2; k < steps - 1; k += 2)
+                ctx.fillRect(Math.round(bx + x0 + ((next[0] - x0) * k) / steps), Math.round(by + y0 + ((next[1] - y0) * k) / steps), 1, 1);
+            }
+            const tw = 0.7 + 0.3 * Math.sin(t * 1.3 + i * 2 + sh.x * 9);
+            ctx.fillStyle = `rgba(${s.line},${tw * fade})`;
+            ctx.fillRect(Math.round(bx + x0) - 1, Math.round(by + y0), 3, 1);
+            ctx.fillRect(Math.round(bx + x0), Math.round(by + y0) - 1, 1, 3);
+          }
+        }
+      }
+
+      // ── Crossing the high sky: a satellite by night, a plane and its trail by day ──
+      {
+        const cx = Math.round(((t * 5 + W * 0.55) % (W + 120)) - 60);
+        const cy = Math.round(H * 0.15 - e * H * 0.5 + Math.sin(t * 0.5) * 2);
+        if (cy > -10) {
+          if (theme === "dark") {
+            ctx.fillStyle = s.craftDark;
+            ctx.fillRect(cx - 7, cy, 5, 3);
+            ctx.fillRect(cx + 3, cy, 5, 3);
+            ctx.fillStyle = s.near;
+            ctx.fillRect(cx - 5, cy, 1, 3);
+            ctx.fillRect(cx + 5, cy, 1, 3);
+            ctx.fillStyle = s.craft;
+            ctx.fillRect(cx - 2, cy - 1, 5, 5);
+            ctx.fillRect(cx, cy - 3, 1, 2);
+            if (Math.sin(t * 4) > 0.2) {
+              ctx.fillStyle = "#ff5a4d";
+              ctx.fillRect(cx, cy - 4, 1, 1);
+            }
+          } else {
+            for (let i = 0; i < 70; i += 2) {
+              ctx.fillStyle = `rgba(159,180,204,${0.8 * (1 - i / 70)})`;
+              ctx.fillRect(cx - 8 - i, cy + (i > 30 && i % 8 < 2 ? 1 : 0), 2, 1);
+            }
+            ctx.fillStyle = s.craftDark;
+            ctx.fillRect(cx - 3, cy + 1, 6, 1); // wing
+            ctx.fillRect(cx - 7, cy - 2, 2, 2); // tail fin
+            ctx.fillStyle = s.craft;
+            ctx.fillRect(cx - 7, cy, 13, 2);
+            ctx.fillRect(cx + 6, cy + 1, 1, 1);
+            ctx.fillStyle = s.near;
+            ctx.fillRect(cx + 3, cy, 2, 1); // cockpit
+          }
+        }
+      }
+
+      // ── Clouds: two layers you fall through, the nearer one faster ──
+      for (let i = 0; i < 18; i++) {
+        const front = i % 2 === 0;
+        const depth = front ? 3.1 : 2.1;
+        const w = (front ? 34 : 22) + Math.floor(hash(i + 3) * (front ? 50 : 30));
+        const y = Math.round(H * (0.62 + hash(i * 5 + 1) * (depth - 0.75)) - e * H * depth);
+        if (y < -10 || y > H + 6) continue;
+        const x = Math.round(((hash(i * 9 + 4) * (W + 120) + t * (front ? 3.5 : 1.6)) % (W + 120)) - 60);
+        if (!front) {
+          ctx.fillStyle = s.cloudEdge;
+          ctx.fillRect(x + 3, y - 1, w - 8, 1);
+          ctx.fillRect(x, y, w, 2);
+          continue;
+        }
+        const bump = Math.floor(w * (0.25 + hash(i) * 0.3));
         ctx.fillStyle = s.cloudEdge;
-        ctx.fillRect(x + 6, y - 2, Math.max(4, w - 20), 1);
-        ctx.fillRect(x + 3, y - 1, w - 9, 1);
+        ctx.fillRect(x + bump, y - 4, Math.floor(w * 0.28), 1);
+        ctx.fillRect(x + bump - 3, y - 3, Math.floor(w * 0.28) + 7, 1);
+        ctx.fillRect(x + 5, y - 2, w - 11, 1);
+        ctx.fillRect(x + 2, y - 1, w - 5, 1);
         ctx.fillStyle = s.cloud;
-        ctx.fillRect(x, y, w, 3);
-        ctx.fillRect(x + 4, y + 3, w - 9, 1);
+        ctx.fillRect(x + bump - 2, y - 2, Math.floor(w * 0.28) + 5, 1);
+        ctx.fillRect(x + 4, y - 1, w - 10, 1);
+        ctx.fillRect(x, y, w, 4);
+        ctx.fillRect(x + 5, y + 4, w - 12, 1);
+        ctx.fillStyle = s.cloudEdge;
+        ctx.fillRect(x + 3, y + 3, w - 7, 1);
+      }
+
+      // ── Hot-air balloons drifting through the middle of the descent ──
+      for (let i = 0; i < 6; i++) {
+        const lane = [0.07, 0.2, 0.82, 0.93, 0.27, 0.75][i];
+        const bx = Math.round(W * lane + Math.sin(t * 0.25 + i * 2) * 5);
+        const by = Math.round(H * (0.8 + i * 0.27) - e * H * 1.75 + Math.sin(t * 0.6 + i) * 2);
+        if (by < -16 || by > H + 14) continue;
+        const [c1, c2] = s.balloons[i % s.balloons.length];
+        const profile = [5, 9, 11, 13, 13, 13, 13, 11, 11, 9, 7, 5, 3];
+        profile.forEach((w, row) => {
+          for (let dx = -Math.floor(w / 2); dx <= Math.floor(w / 2); dx++) {
+            ctx.fillStyle = Math.floor((dx + 21) / 3) % 2 ? c1 : c2;
+            ctx.fillRect(bx + dx, by - 8 + row, 1, 1);
+          }
+        });
+        ctx.fillStyle = s.craftDark;
+        ctx.fillRect(bx - 1, by + 5, 1, 2);
+        ctx.fillRect(bx + 1, by + 5, 1, 2);
+        ctx.fillStyle = s.basket;
+        ctx.fillRect(bx - 1, by + 7, 3, 2);
+        if (theme === "dark") {
+          // The burner, glowing through the night.
+          ctx.fillStyle = `rgba(255,179,71,${0.6 + 0.4 * Math.sin(t * 7 + i * 3)})`;
+          ctx.fillRect(bx, by + 5, 1, 2);
+        }
       }
 
       // ── Horizon glow, moon or sun, and the three ridges ──
