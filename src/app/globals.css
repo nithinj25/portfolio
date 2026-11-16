@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --bg: #faf9f5;
+  --fg: #17160f;
+  --muted: #6a6961;
+  --faint: #a09e95;
+  --line: #e6e3d9;
+  --card: #ffffff;
+  --accent: #d9481a;
+  --good: #1f9d57;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0b0c;
+  --fg: #ecebe6;
+  --muted: #9a9992;
+  --faint: #5c5b57;
+  --line: #222223;
+  --card: #121213;
+  --accent: #ff7a45;
+  --good: #3ecf7a;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-card: var(--card);
+  --color-accent: var(--accent);
+  --color-good: var(--good);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Underline that draws in from the left. */
+.link {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.2s;
+}
+.link:hover {
+  background-size: 100% 1px;
+}
+
+/* Staggered entrance: set --i on each block. */
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* Theme switch: the new theme wipes in as a circle from the toggle. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Cursor-following glow on cards. */
+.spot {
+  position: relative;
+  isolation: isolate;
+}
+.spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--accent) 14%, transparent),
+    transparent 70%
+  );
+}
+.spot:hover::before {
+  opacity: 1;
+}
+
+/* Project illustrations */
+@keyframes grow {
+  from {
+    transform: scaleX(0.35);
+  }
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+.art-grow {
+  transform-box: fill-box;
+  animation: grow 2.6s ease-in-out infinite alternate;
+}
+.art-dash {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: dash 3.2s ease-out infinite;
+}
+.art-blink {
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+/* Blog prose */
+.prose {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: color-mix(in oklab, var(--fg) 88%, var(--bg));
+}
+.prose > * + * {
+  margin-top: 1.25em;
+}
+.prose h2,
+.prose h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--fg);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 6rem;
+}
+.prose h2 {
+  font-size: 1.85rem;
+  margin-top: 2.2em;
+}
+.prose h3 {
+  font-size: 1.4rem;
+  margin-top: 1.8em;
+}
+.prose a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose a:hover {
+  color: var(--accent);
+}
+.prose strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.3em;
+}
+.prose ul {
+  list-style: disc;
+}
+.prose ol {
+  list-style: decimal;
+}
+.prose li + li {
+  margin-top: 0.4em;
+}
+.prose li::marker {
+  color: var(--faint);
+}
+.prose blockquote {
+  border-left: 2px solid var(--accent);
+  padding-left: 1.1em;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.3rem;
+  line-height: 1.45;
+  color: var(--fg);
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 2.5em 0;
+}
+.prose img {
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  overflow-x: auto;
+}
+.prose pre code span {
+  color: var(--shiki-light);
+}
+[data-theme="dark"] .prose pre code span {
+  color: var(--shiki-dark);
+}
+.prose table {
+  width: 100%;
+  font-size: 0.93rem;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+.prose th,
+.prose td {
+  text-align: left;
+  padding: 0.55em 0.9em 0.55em 0;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.prose th {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .rise,
+  .art-grow,
+  .art-dash,
+  .art-blink {
+    animation: none;
+  }
+  .art-dash {
+    stroke-dashoffset: 0;
+  }
+}
