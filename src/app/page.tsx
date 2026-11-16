@@ -4,7 +4,7 @@ import PostList from "@/components/PostList";
 import ProjectCard from "@/components/ProjectCard";
 import { FileIcon, GithubIcon, LinkedinIcon, MailIcon, PinIcon, XIcon } from "@/components/icons";
 import { CopyEmail, GithubActivity, LocalTime, Reveal, Spotlight } from "@/components/widgets";
-import { about, experience, focus, highlights, site, stack } from "@/data/site";
+import { about, achievements, experience, focus, site, stack } from "@/data/site";
 import { featuredProjects, projects } from "@/lib/projects";
 import { getAllPosts } from "@/lib/posts";
 
@@ -42,13 +42,67 @@ function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Links that are still empty in site.ts render as dashed TODO icons.
 const socialLinks = [
   { href: site.socials.github, label: "GitHub", Icon: GithubIcon },
-  { href: site.socials.linkedin, label: "LinkedIn", Icon: LinkedinIcon },
   { href: site.socials.x, label: "X", Icon: XIcon },
+  { href: site.socials.linkedin, label: "LinkedIn", Icon: LinkedinIcon },
   { href: `mailto:${site.email}`, label: "Email", Icon: MailIcon },
   { href: site.resume, label: "Résumé", Icon: FileIcon },
-].filter((s) => s.href);
+];
+
+/** One row of the Experience and Achievements lists: logo, title, organisation, date. */
+function Row({
+  logo,
+  mark,
+  title,
+  url,
+  sub,
+  note,
+  date,
+  todo = false,
+}: {
+  logo?: string;
+  mark: string;
+  title: string;
+  url?: string;
+  sub: string;
+  note?: string;
+  date: string;
+  todo?: boolean;
+}) {
+  return (
+    <li className={`flex items-start gap-4 border-b border-line py-4 ${todo ? "text-faint" : ""}`}>
+      {logo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={logo} alt="" width={40} height={40} className="size-10 shrink-0 rounded-xl border border-line bg-card object-contain" />
+      ) : (
+        <span
+          aria-hidden
+          className={`grid size-10 shrink-0 place-items-center rounded-xl border bg-card font-serif text-xl italic ${
+            todo ? "border-dashed border-faint" : "border-line"
+          }`}
+        >
+          {mark}
+        </span>
+      )}
+      <div className="min-w-0 flex-1">
+        <h3 className={`tracking-tight ${todo ? "font-mono text-sm" : "font-medium"}`}>
+          {url ? (
+            <a href={url} target="_blank" rel="noreferrer" className="link">
+              {title}
+            </a>
+          ) : (
+            title
+          )}
+        </h3>
+        <p className={`text-sm ${todo ? "font-mono text-xs" : "text-muted"}`}>{sub}</p>
+        {note && <p className="mt-1.5 text-sm leading-relaxed text-muted">{note}</p>}
+      </div>
+      <span className="shrink-0 pt-0.5 font-mono text-xs text-faint">{date}</span>
+    </li>
+  );
+}
 
 export default function Home() {
   const posts = getAllPosts().slice(0, 3);
@@ -85,16 +139,27 @@ export default function Home() {
           <ul className="flex items-center gap-1 pb-1">
             {socialLinks.map(({ href, label, Icon }) => (
               <li key={label}>
-                <a
-                  href={href}
-                  target={href.startsWith("http") ? "_blank" : undefined}
-                  rel="noreferrer"
-                  aria-label={label}
-                  title={label}
-                  className="grid size-9 place-items-center rounded-full border border-line bg-bg text-muted transition hover:-translate-y-0.5 hover:text-fg"
-                >
-                  <Icon />
-                </a>
+                {href ? (
+                  <a
+                    href={href}
+                    target={href.startsWith("http") || href.endsWith(".pdf") ? "_blank" : undefined}
+                    rel="noreferrer"
+                    aria-label={label}
+                    title={label}
+                    className="grid size-9 place-items-center rounded-full border border-line bg-bg text-muted transition hover:-translate-y-0.5 hover:border-faint hover:text-fg"
+                  >
+                    <Icon />
+                  </a>
+                ) : (
+                  <span
+                    role="img"
+                    aria-label={`${label} (TODO: link not added yet)`}
+                    title={`TODO: add your ${label} link in src/data/site.ts`}
+                    className="grid size-9 place-items-center rounded-full border border-dashed border-faint bg-bg text-faint"
+                  >
+                    <Icon />
+                  </span>
+                )}
               </li>
             ))}
           </ul>
@@ -163,33 +228,26 @@ export default function Home() {
         {site.showGithubActivity && <GithubActivity />}
       </Section>
 
-      {/* ── Experience (hidden until you add a role) ─────── */}
-      {experience.length > 0 && (
-        <Section id="experience" title="Experience">
-          <ol className="space-y-6">
-            {experience.map((e) => (
-              <li key={e.company + e.role} className="grid gap-1 sm:grid-cols-[1fr_auto] sm:gap-6">
-                <div>
-                  <h3 className="font-medium">
-                    {e.url ? (
-                      <a href={e.url} target="_blank" rel="noreferrer" className="link">
-                        {e.company}
-                      </a>
-                    ) : (
-                      e.company
-                    )}
-                  </h3>
-                  <p className="text-sm text-muted">{e.role}</p>
-                  {e.summary && <p className="mt-2 text-sm leading-relaxed text-muted">{e.summary}</p>}
-                </div>
-                <p className="font-mono text-xs text-faint sm:pt-1">
-                  {e.start} – {e.end}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </Section>
-      )}
+      {/* ── Experience ───────────────────────────────────── */}
+      <Section id="experience" title="Experience">
+        <ol className="border-t border-line">
+          {experience.map((e) => (
+            <Row
+              key={e.company + e.role}
+              logo={e.logo}
+              mark={e.company[0]}
+              title={e.role}
+              url={e.url}
+              sub={e.company}
+              note={e.summary}
+              date={`${e.start} – ${e.end}`}
+            />
+          ))}
+          {experience.length === 0 && (
+            <Row todo mark="?" title="TODO: add your experience" sub="Role · Organisation (src/data/site.ts)" date="Dates" />
+          )}
+        </ol>
+      </Section>
 
       {/* ── Projects ─────────────────────────────────────── */}
       <Section
@@ -210,36 +268,23 @@ export default function Home() {
         </ul>
       </Section>
 
-      {/* ── Hackathons ───────────────────────────────────── */}
-      {highlights.length > 0 && (
-        <Section id="hackathons" title="Hackathons">
-          <ul className="border-t border-line">
-            {highlights.map((h) => (
-              <li key={h.title} className="flex items-baseline justify-between gap-6 border-b border-line py-3.5">
-                <div>
-                  <h3 className="font-medium tracking-tight">
-                    {h.url ? (
-                      <a href={h.url} target="_blank" rel="noreferrer" className="link">
-                        {h.title}
-                      </a>
-                    ) : (
-                      h.title
-                    )}
-                  </h3>
-                  <p className="text-sm text-muted">{h.detail}</p>
-                </div>
-                <span className="font-mono text-xs text-faint">{h.year}</span>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      )}
+      {/* ── Achievements ─────────────────────────────────── */}
+      <Section id="achievements" title="Achievements">
+        <ul className="border-t border-line">
+          {achievements.map((h) => (
+            <Row key={h.title} logo={h.logo} mark={h.org[0]} title={h.title} url={h.url} sub={h.org} note={h.note} date={h.year} />
+          ))}
+          {achievements.length === 0 && (
+            <Row todo mark="?" title="TODO: add your achievements" sub="Award · Organisation (src/data/site.ts)" date="Year" />
+          )}
+        </ul>
+      </Section>
 
-      {/* ── Writing ──────────────────────────────────────── */}
+      {/* ── Blog ─────────────────────────────────────────── */}
       {posts.length > 0 && (
         <Section
           id="blog"
-          title="Writing"
+          title="Blog"
           aside={
             <Link href="/blog" className="link text-sm text-muted hover:text-fg">
               All posts

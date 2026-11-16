@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 //  Everything the site says about you lives in this file.
 //  Edit here; no component needs to change.
-//  Sections with an empty list (experience, for now) hide themselves.
+//  Anything still missing is marked TODO, here and on the page.
 // ─────────────────────────────────────────────────────────────
 
 export const site = {
@@ -21,8 +21,9 @@ export const site = {
   availabilityText: "Open to internships & full-time roles",
   // Drop a photo in /public (e.g. /avatar.jpg) and put its path here.
   avatar: "",
-  // Path to a PDF in /public (e.g. /resume.pdf). Empty hides the button.
+  // TODO: put your résumé PDF in /public and set its path (e.g. "/resume.pdf").
   resume: "",
+  // TODO: add your LinkedIn and X profile URLs. Empty ones show as dashed TODO icons.
   socials: {
     github: "https://github.com/nithinj25",
     linkedin: "",
@@ -56,24 +57,37 @@ export type Experience = {
   end: string;
   summary?: string;
   url?: string;
+  /** Image in /public, e.g. "/logos/acme.png". Without one, the row shows the company's initial. */
+  logo?: string;
 };
 
-// Add roles here, newest first, and the "Experience" section appears.
+// TODO: add your roles here, newest first. While this list is empty the
+// Experience section shows a TODO placeholder row.
 // { company: "Acme", role: "Software Engineer Intern", start: "May 2026", end: "Aug 2026", summary: "What you shipped." },
 export const experience: Experience[] = [];
 
-export type Highlight = { title: string; detail: string; year: string; url?: string };
+export type Achievement = {
+  title: string;
+  org: string;
+  note?: string;
+  year: string;
+  url?: string;
+  /** Image in /public, e.g. "/logos/kaggle.png". Without one, the row shows the organisation's initial. */
+  logo?: string;
+};
 
-export const highlights: Highlight[] = [
+export const achievements: Achievement[] = [
   {
     title: "Gemma hackathon",
-    detail: "Kaggle × Google DeepMind · built Clinical Trial Matcher",
+    org: "Kaggle × Google DeepMind",
+    note: "Built Clinical Trial Matcher",
     year: "2026",
     url: "https://github.com/nithinj25/trial-matcher",
   },
   {
     title: "Google Solution Challenge",
-    detail: "Google Developer Groups · built ArogyaLink",
+    org: "Google Developer Groups",
+    note: "Built ArogyaLink",
     year: "2025",
     url: "https://github.com/nithinj25/arogyaLink",
   },
