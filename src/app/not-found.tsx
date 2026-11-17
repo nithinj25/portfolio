@@ -1,8 +1,10 @@
 import Link from "next/link";
 import LostScene from "@/components/LostScene";
+import SiteChrome from "@/components/SiteChrome";
 
 export default function NotFound() {
   return (
+    <SiteChrome>
     <div className="grid min-h-[70vh] place-items-center pt-10 text-center">
       <div className="rise w-full">
         <LostScene />
@@ -18,5 +20,6 @@ export default function NotFound() {
         </div>
       </div>
     </div>
+    </SiteChrome>
   );
 }

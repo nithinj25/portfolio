@@ -164,8 +164,6 @@ export default function WorldBackdrop() {
   const ref = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState<number | null>(null);
   const pathname = usePathname();
-  // Post pages (and the reader panel) are for reading: the scene holds still.
-  const calm = pathname.startsWith("/blog/");
   // Comets and the counter only on the home page.
   const game = pathname === "/";
 
@@ -174,7 +172,7 @@ export default function WorldBackdrop() {
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
 
-    const reduce = calm || matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const make = () => document.createElement("canvas");
     const layers = { sky: make(), glow: make(), far: make(), mid: make(), near: make() };
     let theme: keyof typeof SCENES = "dark";
@@ -750,7 +748,7 @@ export default function WorldBackdrop() {
       removeEventListener("pointerdown", onDown);
       document.documentElement.removeEventListener("pointerleave", onLeave);
     };
-  }, [calm, game]);
+  }, [game]);
 
   return (
     <>

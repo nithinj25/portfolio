@@ -105,15 +105,51 @@ body {
   mask-image: linear-gradient(to bottom, transparent, black 16rem, black calc(100% - 9rem), transparent);
 }
 
-/* Reader panel (see <PostReader>): slides in from the right. */
-.reader-panel {
-  animation: reader-in 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+/* ── Blog reading page ───────────────────────────────────── */
+/* Larger, calmer body text, like the big reading sites. */
+.reading .prose {
+  font-size: 1.1875rem;
+  line-height: 1.8;
 }
-@keyframes reader-in {
-  from {
-    transform: translateX(48px);
-    opacity: 0;
-  }
+.reading .prose > * + * {
+  margin-top: 1.4em;
+}
+.reading .prose h2 {
+  font-size: 2.1rem;
+}
+/* Images break out wider than the text column, with a caption under them. */
+.prose figure {
+  margin-block: 2.4em;
+}
+.prose figure img {
+  width: 100%;
+}
+.reading .prose figure {
+  position: relative;
+  left: 50%;
+  width: min(960px, calc(100vw - 2.5rem));
+  translate: -50% 0;
+}
+.prose figcaption {
+  margin-top: 0.8em;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* "Sharpen into focus" (see <ReadingFocus>): blocks start faded and reach
+   full contrast as they scroll into reading position. Only active once JS
+   adds .focus-on, so text is never hidden without it. */
+.focus-on .prose > * {
+  opacity: 0.3;
+  filter: blur(0.6px);
+  transition:
+    opacity 0.7s ease,
+    filter 0.7s ease;
+}
+.focus-on .prose > .seen {
+  opacity: 1;
+  filter: none;
 }
 
 /* Scroll reveal (see <Reveal>): hidden until it enters the viewport, then stays. */
@@ -337,8 +373,10 @@ body {
     transform: none;
     transition: none;
   }
-  .reader-panel {
-    animation: none;
+  .focus-on .prose > * {
+    opacity: 1;
+    filter: none;
+    transition: none;
   }
   .rise,
   .art-grow,

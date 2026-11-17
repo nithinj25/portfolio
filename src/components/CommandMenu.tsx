@@ -4,7 +4,7 @@ import { Command } from "cmdk";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { site } from "@/data/site";
-import { toggleTheme } from "./ThemeToggle";
+import { cycleThemeMode, setThemeMode } from "./ThemeToggle";
 import { SearchIcon } from "./icons";
 
 export const OPEN_COMMAND_MENU = "open-command-menu";
@@ -161,8 +161,15 @@ export default function CommandMenu({ posts, projects }: Props) {
           )}
 
           <Command.Group heading="Actions">
-            <Command.Item value="toggle theme dark light" onSelect={run(() => toggleTheme())} className={itemCls}>
-              Toggle theme
+            <Command.Item value="toggle theme cycle auto dark light" onSelect={run(() => cycleThemeMode())} className={itemCls}>
+              Switch theme
+              <span className="shrink-0 font-mono text-xs text-faint">auto → dark → light</span>
+            </Command.Item>
+            <Command.Item value="theme dark mode" onSelect={run(() => setThemeMode("dark"))} className={itemCls}>
+              Use dark theme
+            </Command.Item>
+            <Command.Item value="theme auto time of day clock" onSelect={run(() => setThemeMode("auto"))} className={itemCls}>
+              Theme follows time of day
             </Command.Item>
             <Command.Item
               value="copy email address"

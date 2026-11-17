@@ -5,11 +5,7 @@ import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "./globals.css";
 import CommandMenu from "@/components/CommandMenu";
-import Footer from "@/components/Footer";
-import Nav from "@/components/Nav";
-import WorldBackdrop from "@/components/WorldBackdrop";
 import { site } from "@/data/site";
-import { ScrollProgress } from "@/components/widgets";
 import { getAllPosts } from "@/lib/posts";
 import { projects } from "@/lib/projects";
 
@@ -29,10 +25,12 @@ export const viewport: Viewport = {
   ],
 };
 
-// Runs before first paint so the saved (or system) theme never flashes.
-const themeScript = `(function(){var t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t})()`;
+// Runs before first paint so the theme never flashes.
+// Same rule as ThemeToggle: a saved "light"/"dark" wins; otherwise follow the
+// visitor's clock (light 7:00–18:59, dark otherwise).
+const themeScript = `(function(){var t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark"){var h=new Date().getHours();t=h>=7&&h<19?"light":"dark"}document.documentElement.dataset.theme=t})()`;
 
-export default function RootLayout({ children, modal }: { children: React.ReactNode; modal: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const posts = getAllPosts().map(({ slug, title }) => ({ slug, title }));
   return (
     <html lang="en" data-theme="dark" data-scroll-behavior="smooth" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
@@ -46,19 +44,7 @@ export default function RootLayout({ children, modal }: { children: React.ReactN
         >
           Skip to content
         </a>
-        <ScrollProgress />
-        <WorldBackdrop />
-        <Nav />
-        {/* The veil keeps text readable over the backdrop; the scene shows in full beside and below it. */}
-        <div className="veil">
-          <main id="main" className="mx-auto max-w-[920px] px-5">
-            {children}
-          </main>
-          <Footer />
-        </div>
-        {/* Room at the end of every page for the landing: the campsite, unobstructed. */}
-        <div aria-hidden className="h-[44vh]" />
-        {modal}
+        {children}
         <CommandMenu posts={posts} projects={projects.map(({ slug, title, tagline }) => ({ slug, title, tagline }))} />
       </body>
     </html>

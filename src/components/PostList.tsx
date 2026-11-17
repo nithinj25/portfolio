@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { formatDate, type PostMeta } from "@/lib/posts";
-import { ArrowUpRight } from "./icons";
 import { Spotlight } from "./widgets";
 
 const Draft = () => (
@@ -28,7 +27,7 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
       <div className="mt-5 flex items-center justify-between gap-4">
         <p className="font-mono text-xs text-faint">{post.tags.map((t) => `#${t}`).join("  ")}</p>
         <span className="flex items-center gap-1 text-sm text-muted transition-colors group-hover:text-accent">
-          Read <ArrowUpRight width={13} height={13} />
+          Read <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
         </span>
       </div>
     </Spotlight>
