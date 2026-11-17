@@ -266,9 +266,15 @@ export default function Banner() {
     const onVisibility = () => (document.hidden ? stop() : start());
     document.addEventListener("visibilitychange", onVisibility);
 
+    // Coalesced: a theme switch fires both the event and the attribute change.
+    let pending = 0;
     const repaint = () => {
-      paintStatic();
-      if (reduce) draw(0);
+      if (pending) return;
+      pending = requestAnimationFrame(() => {
+        pending = 0;
+        paintStatic();
+        if (reduce) draw(0);
+      });
     };
     const mo = new MutationObserver(repaint);
     const unwatchSky = everyMinute(repaint);
@@ -296,6 +302,7 @@ export default function Banner() {
       stop();
       io.disconnect();
       mo.disconnect();
+      cancelAnimationFrame(pending);
       unwatchSky();
       removeEventListener(THEME_CHANGED, repaint);
       document.removeEventListener("visibilitychange", onVisibility);

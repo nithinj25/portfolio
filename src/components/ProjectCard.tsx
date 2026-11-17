@@ -5,10 +5,15 @@ import ProjectArt from "./ProjectArt";
 import { ArrowUpRight } from "./icons";
 import { Spotlight } from "./widgets";
 
-/** Screenshot if there is one, else the project's diagram, else a marked TODO slot. Always 16:10, so nothing shifts. */
-export function ProjectMedia({ p, eager = false }: { p: Project; eager?: boolean }) {
+/**
+ * Screenshot if there is one, else the project's diagram, else a marked TODO
+ * slot. 16:10 with a fixed box, so nothing shifts. On cards (`capped`) the box
+ * stops growing past a set height, so a full-width card on a mid-size screen
+ * doesn't turn into a giant picture; the diagram stays centred inside it.
+ */
+export function ProjectMedia({ p, eager = false, capped = false }: { p: Project; eager?: boolean; capped?: boolean }) {
   return (
-    <div className="aspect-[16/10] overflow-hidden bg-bg/60">
+    <div className={`aspect-[16/10] w-full overflow-hidden bg-bg/60 ${capped ? "max-h-52 sm:max-h-60" : ""}`}>
       <div className="size-full transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transform-none">
         {p.image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -77,7 +82,7 @@ export default function ProjectCard({ p, wide = false }: { p: Project; wide?: bo
     <Spotlight className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-card transition duration-300 ease-out hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_20px_50px_-28px_var(--accent)] has-[:focus-visible]:border-accent/50 motion-reduce:transform-none ${wide ? "sm:grid sm:grid-cols-[1.15fr_1fr]" : ""}`}>
       <div className={`border-b border-line ${wide ? "sm:flex sm:items-center sm:border-b-0 sm:border-r" : ""}`}>
         <div className="w-full">
-          <ProjectMedia p={p} />
+          <ProjectMedia p={p} capped />
         </div>
       </div>
       <div className={`flex flex-1 flex-col p-5 ${wide ? "sm:p-7" : ""}`}>

@@ -226,6 +226,16 @@ body {
   animation: none;
   mix-blend-mode: normal;
 }
+/* The new theme sits on top of the old one while it wipes in. */
+::view-transition-new(root) {
+  z-index: 2;
+}
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
 
 /* Cursor-following glow on cards. */
 .spot {

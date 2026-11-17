@@ -695,8 +695,14 @@ export default function WorldBackdrop() {
       document.body.style.cursor = "";
     };
     const unwatchSky = everyMinute(rebuild);
-    addEventListener(THEME_CHANGED, rebuild);
-    const mo = new MutationObserver(rebuild);
+    // A theme switch fires both the event and the attribute change; rebuild
+    // the scene once, on the next frame, not twice in the middle of the wipe.
+    let pending = 0;
+    const rebuildSoon = () => {
+      if (!pending) pending = requestAnimationFrame(() => ((pending = 0), rebuild()));
+    };
+    addEventListener(THEME_CHANGED, rebuildSoon);
+    const mo = new MutationObserver(rebuildSoon);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     addEventListener("resize", rebuild);
@@ -710,8 +716,9 @@ export default function WorldBackdrop() {
     return () => {
       stop();
       mo.disconnect();
+      cancelAnimationFrame(pending);
       unwatchSky();
-      removeEventListener(THEME_CHANGED, rebuild);
+      removeEventListener(THEME_CHANGED, rebuildSoon);
       document.body.style.cursor = "";
       removeEventListener("resize", rebuild);
       document.removeEventListener("visibilitychange", start);

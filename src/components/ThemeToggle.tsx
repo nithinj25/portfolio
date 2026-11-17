@@ -53,12 +53,20 @@ export function setThemeMode(mode: ThemeMode, x?: number, y?: number) {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!document.startViewTransition || reduce || x == null || y == null) return apply();
   const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-  document.startViewTransition(apply).ready.then(() =>
-    root.animate(
-      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-      { duration: 480, easing: "cubic-bezier(0.4, 0, 0.2, 1)", pseudoElement: "::view-transition-new(root)" },
-    ),
-  );
+  // While the circle wipes in, switch off every element's own colour
+  // transition (body, cards, links). Otherwise each one fades separately
+  // inside the circle and the switch flickers instead of wiping cleanly.
+  root.classList.add("theme-switching");
+  const t = document.startViewTransition(apply);
+  t.ready
+    .then(() =>
+      root.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: "cubic-bezier(0.65, 0, 0.35, 1)", pseudoElement: "::view-transition-new(root)" },
+      ),
+    )
+    .catch(() => {});
+  t.finished.finally(() => root.classList.remove("theme-switching"));
 }
 
 /** Move to the next mode: auto → dark → light → auto. */

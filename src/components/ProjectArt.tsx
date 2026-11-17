@@ -200,7 +200,7 @@ const ART = { duel: Duel, book: Book, graph: Graph, pulse: Pulse, funnel: Funnel
 export default function ProjectArt({ kind, title }: { kind: NonNullable<Project["art"]>; title: string }) {
   const Art = ART[kind];
   return (
-    <svg viewBox="0 0 320 200" role="img" aria-label={`Illustration for ${title}`} className="block w-full">
+    <svg viewBox="0 0 320 200" role="img" aria-label={`Illustration for ${title}`} className="block size-full">
       <Art />
     </svg>
   );
