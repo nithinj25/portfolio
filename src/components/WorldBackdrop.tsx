@@ -419,8 +419,10 @@ export default function WorldBackdrop() {
         const x = Math.round(((hash(i * 9 + 4) * (W + 120) + t * (front ? 3.5 : 1.6)) % (W + 120)) - 60);
         if (!front) {
           ctx.fillStyle = s.cloudEdge;
+          ctx.fillRect(x + Math.floor(w * 0.3), y - 2, Math.floor(w * 0.35), 1);
           ctx.fillRect(x + 3, y - 1, w - 8, 1);
-          ctx.fillRect(x, y, w, 2);
+          ctx.fillRect(x, y, w, 3);
+          ctx.fillRect(x + 4, y + 3, w - 10, 1);
           continue;
         }
         const bump = Math.floor(w * (0.25 + hash(i) * 0.3));
