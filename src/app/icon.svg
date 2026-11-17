@@ -1,1 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0b0b0c"/><text x="15" y="23" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="20" fill="#ecebe6">n</text><circle cx="24" cy="22" r="2.4" fill="#ff7a45"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Pixel favicon: night sky, moon, a comet, and the ridge. -->
+  <rect width="16" height="16" fill="#06071a"/>
+  <rect y="6" width="16" height="3" fill="#171744"/>
+  <rect y="9" width="16" height="2" fill="#6e3160"/>
+  <rect y="11" width="16" height="1" fill="#c2573f"/>
+  <rect x="11" y="2" width="3" height="3" fill="#f6ecce"/>
+  <rect x="13" y="4" width="1" height="1" fill="#cfc3a0"/>
+  <rect x="2" y="2" width="1" height="1" fill="#fff8e6"/>
+  <rect x="7" y="1" width="1" height="1" fill="#fff8e6" opacity=".7"/>
+  <rect x="5" y="7" width="2" height="2" fill="#ff7a45"/>
+  <rect x="7" y="6" width="1" height="1" fill="#ff7a45" opacity=".8"/>
+  <rect x="8" y="5" width="1" height="1" fill="#ff7a45" opacity=".55"/>
+  <rect x="9" y="4" width="1" height="1" fill="#ff7a45" opacity=".3"/>
+  <path fill="#1c1842" d="M0 12h3v-1h2v-1h2v1h2v1h2v-1h2v-1h3v6H0z"/>
+  <path fill="#07070d" d="M0 14h4v-1h4v1h4v-1h4v3H0z"/>
+</svg>
