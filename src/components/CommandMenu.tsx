@@ -14,9 +14,12 @@ const SECTIONS = [
   { id: "about", label: "About" },
   { id: "stack", label: "Stack" },
   { id: "activity", label: "Activity" },
+  { id: "competitive", label: "Competitive programming" },
   { id: "experience", label: "Experience" },
+  { id: "research", label: "Research" },
   { id: "projects", label: "Projects" },
   { id: "achievements", label: "Achievements" },
+  { id: "education", label: "Education" },
   { id: "blog", label: "Blog" },
   { id: "contact", label: "Contact" },
 ];

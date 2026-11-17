@@ -1,42 +1,21 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { site } from "@/data/site";
-import { GithubIcon, CodeIcon } from "./icons";
+import type { Calendar, Day } from "@/lib/activity";
+import { CodeIcon, GithubIcon } from "./icons";
 
 // A year-long activity heatmap card, GitHub-style: 53 weeks × 7 days.
-//
-// Until an account is linked in src/data/site.ts the card is a placeholder:
-// an empty grid with a TODO label. No fake activity is drawn.
-//
-//   GitHub    set `showGithubActivity: true` (uses `handle`)
-//   LeetCode  set `leetcode: "<username>"`; the data loader is still a TODO
-type Day = { date: string; count: number; level: number };
+// The data is fetched at build time (src/lib/activity.ts) and passed in.
+// Without data the card is a placeholder: an empty grid with a label.
+// No fake activity is drawn.
 type Source = "github" | "leetcode";
 
 const WEEKS = 53;
 const META = {
-  github: { name: "GitHub", unit: "contributions", Icon: GithubIcon },
-  leetcode: { name: "LeetCode", unit: "submissions", Icon: CodeIcon },
+  github: { name: "GitHub", unit: "contributions", Icon: GithubIcon, profile: (h: string) => `https://github.com/${h}` },
+  leetcode: { name: "LeetCode", unit: "submissions", Icon: CodeIcon, profile: (h: string) => `https://leetcode.com/u/${h}/` },
 };
 
-export default function Heatmap({ source }: { source: Source }) {
-  const { name, unit, Icon } = META[source];
-  const handle = source === "github" ? (site.showGithubActivity ? site.handle : "") : site.leetcode;
-  const profile = source === "github" ? `https://github.com/${handle}` : `https://leetcode.com/u/${handle}`;
-
-  const [data, setData] = useState<{ days: Day[]; total: number } | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    if (!handle || source !== "github") return; // TODO: LeetCode loader, once a username is set
-    fetch(`https://github-contributions-api.jogruber.de/v4/${handle}?y=last`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then((j) => setData({ days: j.contributions, total: j.total?.lastYear ?? 0 }))
-      .catch(() => setFailed(true));
-  }, [handle, source]);
-
-  const linked = Boolean(handle) && source === "github" && !failed;
+export default function Heatmap({ source, handle, data }: { source: Source; handle: string; data: Calendar | null }) {
+  const { name, unit, Icon, profile } = META[source];
+  const linked = Boolean(handle && data);
   const days: Day[] = data?.days ?? Array.from({ length: WEEKS * 7 }, () => ({ date: "", count: 0, level: 0 }));
   const offset = data ? new Date(data.days[0].date + "T00:00:00Z").getUTCDay() : 0;
 
@@ -46,8 +25,8 @@ export default function Heatmap({ source }: { source: Source }) {
         <h3 className="flex items-center gap-2 font-medium tracking-tight">
           <Icon className="text-muted" /> {name}
         </h3>
-        {linked ? (
-          <a href={profile} target="_blank" rel="noreferrer" className="link font-mono text-xs text-muted hover:text-accent">
+        {handle ? (
+          <a href={profile(handle)} target="_blank" rel="noreferrer" className="link font-mono text-xs text-muted hover:text-accent">
             @{handle}
           </a>
         ) : (
@@ -74,16 +53,14 @@ export default function Heatmap({ source }: { source: Source }) {
         {!linked && (
           <p className="pointer-events-none absolute inset-0 grid place-items-center px-3 text-center">
             <span className="max-w-full rounded-lg border border-dashed border-faint bg-card px-3 py-1.5 font-mono text-[11px] leading-relaxed text-muted">
-              {failed ? `Could not load ${name} activity` : `Placeholder · add your ${name} in src/data/site.ts`}
+              {handle ? `Could not load ${name} activity right now` : `Placeholder · add your ${name} in src/data/site.ts`}
             </span>
           </p>
         )}
       </div>
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3 font-mono text-xs text-muted">
-        <p>
-          {linked ? (data ? `${data.total.toLocaleString("en-US")} ${unit} in the last year` : "Loading…") : `– ${unit} in the last year`}
-        </p>
+        <p>{data ? `${data.total.toLocaleString("en-US")} ${unit} in the last year` : `– ${unit} in the last year`}</p>
         <p className="flex items-center gap-1.5 text-faint" aria-hidden>
           Less
           {[0, 1, 2, 3, 4].map((l) => (

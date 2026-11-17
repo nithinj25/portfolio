@@ -4,9 +4,10 @@ import Heatmap from "@/components/Heatmap";
 import PostList, { FeaturedPost } from "@/components/PostList";
 import ProjectCard from "@/components/ProjectCard";
 import SocialLinks from "@/components/SocialLinks";
-import { CloudIcon, CodeIcon, DatabaseIcon, LayoutIcon, PinIcon, ServerIcon, SparkIcon } from "@/components/icons";
+import { ArrowUpRight, CloudIcon, CodeIcon, DatabaseIcon, LayoutIcon, PinIcon, ServerIcon, SparkIcon } from "@/components/icons";
 import { CopyEmail, LocalTime, Reveal, Spotlight } from "@/components/widgets";
-import { about, achievements, experience, focus, headlineStats, site, stack } from "@/data/site";
+import { about, achievements, competitive, education, experience, focus, headlineStats, research, site, stack } from "@/data/site";
+import { getGithubCalendar, getLeetcode } from "@/lib/activity";
 import { featuredProjects, projects } from "@/lib/projects";
 import { getAllPosts } from "@/lib/posts";
 
@@ -52,12 +53,45 @@ function Chip({ children }: { children: React.ReactNode }) {
 
 const STACK_ICONS: Record<string, typeof CodeIcon> = {
   Languages: CodeIcon,
-  Backend: ServerIcon,
+  "ML & Data": SparkIcon,
+  "Backend & Systems": ServerIcon,
+  "Data & Streaming": DatabaseIcon,
   Frontend: LayoutIcon,
-  Data: DatabaseIcon,
-  AI: SparkIcon,
-  Infra: CloudIcon,
+  "Developer Tools": CloudIcon,
 };
+
+/** A competitive-programming platform card: name, headline number, details, profile link. */
+function PlatformCard({
+  name,
+  value,
+  label,
+  url,
+  children,
+}: {
+  name: string;
+  value: string;
+  label: string;
+  url?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <Spotlight className="flex h-full flex-col rounded-2xl border border-line bg-card p-5">
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="font-mono text-[11px] uppercase tracking-widest text-muted">{name}</h3>
+        {url ? (
+          <a href={url} target="_blank" rel="noreferrer" aria-label={`${name} profile`} className="text-muted transition-colors hover:text-accent">
+            <ArrowUpRight width={14} height={14} />
+          </a>
+        ) : (
+          site.showTodos && <span className="font-mono text-[10px] text-faint">TODO: profile link</span>
+        )}
+      </div>
+      <p className="mt-4 font-serif text-4xl leading-none tracking-tight">{value}</p>
+      <p className="mt-1.5 font-mono text-[11px] text-muted">{label}</p>
+      {children && <div className="mt-auto pt-5">{children}</div>}
+    </Spotlight>
+  );
+}
 
 /**
  * One entry on the Experience and Achievements timelines: a logo (or initial)
@@ -119,8 +153,13 @@ function TimelineItem({
   );
 }
 
-export default function Home() {
+export default async function Home() {
   const [latest, ...olderPosts] = getAllPosts().slice(0, 4);
+  // Fetched at build time and refreshed daily; null falls back to a placeholder.
+  const [github, leetcode] = await Promise.all([
+    site.showGithubActivity ? getGithubCalendar(site.handle) : null,
+    site.leetcode ? getLeetcode(site.leetcode) : null,
+  ]);
   const initials = site.name
     .split(" ")
     .map((w) => w[0])
@@ -128,7 +167,7 @@ export default function Home() {
 
   const stats = [
     { value: String(projects.length), label: "projects built" },
-    { value: String(achievements.length), label: "hackathons" },
+    { value: String(achievements.length), label: "hackathon results" },
     ...headlineStats,
   ];
 
@@ -260,11 +299,60 @@ export default function Home() {
       {(showGithub || showLeetcode) && (
         <Section id="activity" n={next()} title="Activity">
           <div className="grid gap-4">
-            {showGithub && <Heatmap source="github" />}
-            {showLeetcode && <Heatmap source="leetcode" />}
+            {showGithub && <Heatmap source="github" handle={site.showGithubActivity ? site.handle : ""} data={github} />}
+            {showLeetcode && <Heatmap source="leetcode" handle={site.leetcode} data={leetcode?.calendar ?? null} />}
           </div>
         </Section>
       )}
+
+      {/* ── Competitive programming ──────────────────────── */}
+      <Section id="competitive" n={next()} title="Competitive programming">
+        <p className="-mt-2 mb-6 max-w-[68ch] text-muted">{competitive.note}</p>
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {site.leetcode && (
+            <li>
+              <PlatformCard
+                name="LeetCode"
+                value={leetcode ? leetcode.solved.toLocaleString("en-US") : "–"}
+                label={leetcode ? "problems solved" : "could not load stats right now"}
+                url={`https://leetcode.com/u/${site.leetcode}/`}
+              >
+                {leetcode && (
+                  <>
+                    <ul className="space-y-2">
+                      {(
+                        [
+                          ["Easy", leetcode.easy, leetcode.totals.easy],
+                          ["Medium", leetcode.medium, leetcode.totals.medium],
+                          ["Hard", leetcode.hard, leetcode.totals.hard],
+                        ] as const
+                      ).map(([d, n, total]) => (
+                        <li key={d} className="grid grid-cols-[3.5rem_1fr_auto] items-center gap-3 font-mono text-[11px] text-muted">
+                          {d}
+                          <span className="h-1.5 overflow-hidden rounded-full bg-line">
+                            <span className="block h-full rounded-full bg-accent" style={{ width: `${Math.max(2, (n / total) * 100)}%` }} />
+                          </span>
+                          <span className="tabular-nums text-fg">{n}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-4 font-mono text-[11px] text-faint">
+                      {leetcode.rating ? `Contest rating ${leetcode.rating}` : "No contest rating yet"}
+                      {leetcode.topPercent ? ` · top ${leetcode.topPercent}%` : ""}
+                      {leetcode.streak ? ` · ${leetcode.streak}-day streak` : ""}
+                    </p>
+                  </>
+                )}
+              </PlatformCard>
+            </li>
+          )}
+          {competitive.platforms.map((p) => (
+            <li key={p.name}>
+              <PlatformCard name={p.name} value={p.rating ?? "–"} label="rating" url={p.url} />
+            </li>
+          ))}
+        </ul>
+      </Section>
 
       {/* ── Experience ───────────────────────────────────── */}
       {showExperience && (
@@ -277,7 +365,7 @@ export default function Home() {
                 mark={e.company[0]}
                 title={e.role}
                 url={e.url}
-                sub={e.company}
+                sub={e.location ? `${e.company} · ${e.location}` : e.company}
                 note={e.summary}
                 date={`${e.start} – ${e.end}`}
               />
@@ -286,6 +374,54 @@ export default function Home() {
               <TimelineItem todo mark="?" title="TODO: add your experience" sub="Role · Organisation (src/data/site.ts)" date="Dates" />
             )}
           </ol>
+        </Section>
+      )}
+
+      {/* ── Research ─────────────────────────────────────── */}
+      {research.length > 0 && (
+        <Section id="research" n={next()} title="Research">
+          <ul className="grid gap-4">
+            {research.map((r) => (
+              <li key={r.title}>
+                <Spotlight className="rounded-2xl border border-line bg-card p-6 sm:p-7">
+                  <p className="flex flex-wrap items-center gap-3 font-mono text-xs text-faint">
+                    <span className="rounded-full bg-accent/10 px-2 py-0.5 text-accent">Paper</span>
+                    <span>{r.role}</span>
+                    <span>{r.year}</span>
+                  </p>
+                  <h3 className="mt-4 max-w-[30ch] font-serif text-3xl leading-[1.1] tracking-tight">{r.title}</h3>
+                  <p className="mt-2 text-sm text-muted">{r.project}</p>
+                  <ul className="mt-5 max-w-[68ch] space-y-2.5 text-[0.95rem] leading-relaxed text-muted">
+                    {r.points.map((pt) => (
+                      <li key={pt} className="flex gap-3">
+                        <span aria-hidden className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-accent" />
+                        <span>{pt}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                    <ul className="flex flex-wrap gap-1.5">
+                      {r.tech.map((t) => (
+                        <li key={t}>
+                          <Chip>{t}</Chip>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex items-center gap-4 text-sm">
+                      <Link href="/projects/drug-repurposing" className="link text-muted hover:text-accent">
+                        Project page
+                      </Link>
+                      {r.source && (
+                        <a href={r.source} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-muted transition-colors hover:text-accent">
+                          GitHub <ArrowUpRight width={13} height={13} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </Spotlight>
+              </li>
+            ))}
+          </ul>
         </Section>
       )}
 
@@ -314,12 +450,30 @@ export default function Home() {
         <Section id="achievements" n={next()} title="Achievements">
           <ul>
             {achievements.map((h) => (
-              <TimelineItem key={h.title} logo={h.logo} mark={h.org[0]} title={h.title} url={h.url} sub={h.org} note={h.note} date={h.year} />
+              <TimelineItem key={h.title} logo={h.logo} mark={h.title[0]} title={h.title} url={h.url} sub={h.org} note={h.note} date={h.year} />
             ))}
             {achievements.length === 0 && (
               <TimelineItem todo mark="?" title="TODO: add your achievements" sub="Award · Organisation (src/data/site.ts)" date="Year" />
             )}
           </ul>
+        </Section>
+      )}
+
+      {/* ── Education ──────────────────────────────────── */}
+      {education.length > 0 && (
+        <Section id="education" n={next()} title="Education">
+          <ol>
+            {education.map((ed) => (
+              <TimelineItem
+                key={ed.degree}
+                mark={ed.school[0]}
+                title={ed.degree}
+                sub={[ed.school, ed.location].filter(Boolean).join(" · ")}
+                note={ed.score}
+                date={`${ed.start} – ${ed.end}`}
+              />
+            ))}
+          </ol>
         </Section>
       )}
 
