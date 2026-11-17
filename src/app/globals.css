@@ -100,8 +100,9 @@ body {
   z-index: -1;
   pointer-events: none;
   --veil: color-mix(in oklab, var(--bg) 90%, transparent);
-  background: linear-gradient(90deg, transparent, var(--veil) 11%, var(--veil) 89%, transparent);
-  mask-image: linear-gradient(to bottom, black calc(100% - 9rem), transparent);
+  background: linear-gradient(90deg, transparent, var(--veil) 16%, var(--veil) 84%, transparent);
+  /* Fades in below the nav and out above the landing, so it has no hard edge anywhere. */
+  mask-image: linear-gradient(to bottom, transparent, black 16rem, black calc(100% - 9rem), transparent);
 }
 
 /* Scroll reveal (see <Reveal>): hidden until it enters the viewport, then stays. */
