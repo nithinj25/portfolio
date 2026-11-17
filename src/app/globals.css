@@ -26,6 +26,35 @@
   color-scheme: dark;
 }
 
+/* Day-cycle shades (auto mode only; see src/lib/daycycle.ts). Every one keeps
+   text at 4.5:1 or better. Morning uses the plain light tokens above. */
+[data-theme="light"][data-daylight="afternoon"] {
+  --bg: #f6f0e4;
+  --card: #fffaf1;
+  --line: #e6dccb;
+  --muted: #625f57;
+  --faint: #6b685f;
+  --accent: #bb3d16;
+  --good: #16733f;
+}
+[data-theme="light"][data-daylight="evening"] {
+  --bg: #ebe2d4;
+  --card: #f4ede2;
+  --line: #d8ccba;
+  --muted: #57544c;
+  --faint: #5f5c54;
+  --accent: #a83612;
+  --good: #126637;
+}
+[data-theme="dark"][data-daylight="dusk"] {
+  --bg: #12101e;
+  --card: #1a1728;
+  --line: #2a2640;
+  --fg: #ecebf2;
+  --muted: #a29fb4;
+  --faint: #8b88a0;
+}
+
 @theme inline {
   --color-bg: var(--bg);
   --color-fg: var(--fg);
@@ -47,6 +76,7 @@ html {
 
 body {
   background: var(--bg);
+  transition: background-color 1.2s ease;
   color: var(--fg);
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;

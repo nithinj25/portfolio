@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { skyPhase, watchSkyPhase, type SkyPhase } from "@/lib/sky";
+import { everyMinute, paletteForMode } from "@/lib/daycycle";
+import { getThemeMode, THEME_CHANGED } from "./ThemeToggle";
 
 // Procedural pixel landscape drawn at 320×90 and scaled up with crisp pixels.
 // Dark theme: night sky, twinkling stars, glowing moon, shooting stars.
@@ -41,18 +42,6 @@ const SCENES = {
   },
 };
 type Theme = keyof typeof SCENES;
-
-// Time-of-day skies (see src/lib/sky.ts). Phases not listed use the theme's base sky.
-const SKIES: Record<Theme, Partial<Record<SkyPhase, string[]>>> = {
-  dark: {
-    dusk: ["#0b0820", "#1a0f38", "#33164e", "#5a1d5c", "#8f2d5a", "#c8483f", "#ee7a3c", "#ffb054"],
-    dawn: ["#0a1030", "#141d4a", "#263466", "#4a4a86", "#8a6296", "#d48a8a", "#f6b27a", "#ffd9a0"],
-  },
-  light: {
-    dawn: ["#7f9fe0", "#a3b4ea", "#c7c4ee", "#e6cfe8", "#f6d6d6", "#fbdcc0", "#ffe2b0", "#ffe9c4"],
-    dusk: ["#5b7fd0", "#8b93d6", "#b9a0cf", "#e0a9b6", "#f3b497", "#f8c07f", "#fbd08f", "#ffe0a8"],
-  },
-};
 
 function rng(seed: number) {
   return () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
@@ -108,10 +97,18 @@ export default function Banner() {
     const land = { far: layer(), mid: layer(), near: layer() };
     let theme: Theme = "dark";
     let scene: (typeof SCENES)[Theme] = SCENES.dark;
+    let arc = paletteForMode("dark").arc;
+    let starDim = 1;
 
     const paintStatic = () => {
       theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
-      scene = { ...SCENES[theme], sky: SKIES[theme][skyPhase()] ?? SCENES[theme].sky };
+      // Sky, ridges and sun/moon follow the day cycle (src/lib/daycycle.ts).
+      const cycle = paletteForMode(getThemeMode());
+      const p = cycle.palette;
+      const glow = [1, 3, 5].map((i) => parseInt(p.orb.slice(i, i + 2), 16)).join(",");
+      scene = { ...SCENES[theme], sky: p.bannerSky, far: p.far, mid: p.mid, near: p.near, orb: p.orb, orbShade: p.orbShade, glow };
+      arc = cycle.arc;
+      starDim = p.starDim;
       const s = scene;
 
       const sctx = sky.getContext("2d")!;
@@ -169,8 +166,9 @@ export default function Banner() {
       ctx.drawImage(sky, 0, 0);
 
       // Moon / sun with a soft dithered-looking glow.
-      const ox = Math.round(W * 0.8) + off(DEPTH.orb);
-      const oy = Math.round(20 + py);
+      // Rises on the left, peaks mid-sky, sets on the right behind the ridges.
+      const ox = Math.round(W * (0.1 + 0.8 * arc.frac)) + off(DEPTH.orb);
+      const oy = Math.round(H * 0.62 - Math.sin(Math.PI * arc.frac) * H * 0.45 + py);
       for (let y = -17; y <= 17; y++)
         for (let x = -17; x <= 17; x++) {
           const d = Math.sqrt(x * x + y * y);
@@ -189,7 +187,7 @@ export default function Banner() {
         for (const st of stars) {
           const a = 0.5 + 0.5 * Math.sin(t * st.speed + st.phase);
           if (a < 0.2) continue;
-          ctx.fillStyle = `rgba(255,248,230,${a})`;
+          ctx.fillStyle = `rgba(255,248,230,${a * starDim})`;
           const sx = st.x - M + so;
           ctx.fillRect(sx, st.y, 1, 1);
           if (st.big && a > 0.75) {
@@ -273,7 +271,8 @@ export default function Banner() {
       if (reduce) draw(0);
     };
     const mo = new MutationObserver(repaint);
-    const unwatchSky = watchSkyPhase(repaint);
+    const unwatchSky = everyMinute(repaint);
+    addEventListener(THEME_CHANGED, repaint);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     const onMove = (e: PointerEvent) => {
@@ -298,6 +297,7 @@ export default function Banner() {
       io.disconnect();
       mo.disconnect();
       unwatchSky();
+      removeEventListener(THEME_CHANGED, repaint);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("click", onClick);

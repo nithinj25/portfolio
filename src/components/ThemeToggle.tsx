@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { daylight } from "@/lib/daycycle";
 import { MoonIcon, SunIcon } from "./icons";
 
 // Theme modes:
-//   auto   (default) follows the visitor's clock: light 7:00–18:59, dark otherwise
+//   auto   (default) follows the visitor's day (src/lib/daycycle.ts): light
+//          06:00–18:59 in three shades, dark otherwise in two, and skies
+//          that change minute by minute
 //   dark   always dark
 //   light  always light
 // The mode is saved in localStorage under "theme"; "auto" removes the key.
@@ -13,7 +16,18 @@ export type ThemeMode = "auto" | "dark" | "light";
 const ORDER: ThemeMode[] = ["auto", "dark", "light"];
 export const THEME_CHANGED = "theme-mode-changed";
 
-export const themeForNow = (now = new Date()) => (now.getHours() >= 7 && now.getHours() < 19 ? "light" : "dark");
+/** Sets the page theme and, in auto mode, the shade step (data-daylight). */
+export function applyMode(mode: ThemeMode) {
+  const root = document.documentElement;
+  if (mode === "auto") {
+    const d = daylight();
+    root.dataset.theme = d.theme;
+    root.dataset.daylight = d.step;
+  } else {
+    root.dataset.theme = mode;
+    delete root.dataset.daylight;
+  }
+}
 
 export function getThemeMode(): ThemeMode {
   try {
@@ -26,17 +40,16 @@ export function getThemeMode(): ThemeMode {
 /** Apply a mode. Given a point, the new theme wipes in as a circle from it. */
 export function setThemeMode(mode: ThemeMode, x?: number, y?: number) {
   const root = document.documentElement;
-  const next = mode === "auto" ? themeForNow() : mode;
+  const next = mode === "auto" ? daylight().theme : mode;
   try {
     if (mode === "auto") localStorage.removeItem("theme");
     else localStorage.setItem("theme", mode);
   } catch {}
-  window.dispatchEvent(new Event(THEME_CHANGED));
-  if (root.dataset.theme === next) return;
-
   const apply = () => {
-    root.dataset.theme = next;
+    applyMode(mode);
+    window.dispatchEvent(new Event(THEME_CHANGED));
   };
+  if (root.dataset.theme === next) return apply();
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!document.startViewTransition || reduce || x == null || y == null) return apply();
   const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
@@ -66,9 +79,9 @@ export default function ThemeToggle() {
   useEffect(() => {
     const sync = () => setMode(getThemeMode());
     sync();
-    // In auto mode, switch at 7:00 and 19:00 while the page is open.
+    // In auto mode, keep the page shade in step with the day while it's open.
     const tick = setInterval(() => {
-      if (getThemeMode() === "auto") document.documentElement.dataset.theme = themeForNow();
+      if (getThemeMode() === "auto") applyMode("auto");
     }, 60_000);
     window.addEventListener(THEME_CHANGED, sync);
     return () => {

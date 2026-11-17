@@ -26,9 +26,12 @@ export const viewport: Viewport = {
 };
 
 // Runs before first paint so the theme never flashes.
-// Same rule as ThemeToggle: a saved "light"/"dark" wins; otherwise follow the
-// visitor's clock (light 7:00–18:59, dark otherwise).
-const themeScript = `(function(){var t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark"){var h=new Date().getHours();t=h>=7&&h<19?"light":"dark"}document.documentElement.dataset.theme=t})()`;
+// Same rules as src/lib/daycycle.ts `daylight`: a saved "light"/"dark" wins;
+// otherwise the visitor's clock picks the theme and shade step
+// (light 06:00–18:59: morning, afternoon from 15:00, evening from 17:15;
+// dark: dusk 19:00–20:59 and 04:30–05:59, night otherwise).
+// ?time=HH:MM or ?sky=dawn|day|dusk|night previews another time.
+const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem("theme")}catch(e){}if(t==="light"||t==="dark"){d.dataset.theme=t;return}var n=new Date(),m=n.getHours()*60+n.getMinutes(),q=new URLSearchParams(location.search),p=(q.get("time")||"").match(/^(\\d{1,2}):(\\d{2})$/),s={dawn:390,day:750,dusk:1100,night:1380}[q.get("sky")];if(p)m=(+p[1]%24)*60+(+p[2]%60);else if(s!=null)m=s;var a="dark",b="night";if(m>=360&&m<900){a="light";b="morning"}else if(m>=900&&m<1035){a="light";b="afternoon"}else if(m>=1035&&m<1140){a="light";b="evening"}else if((m>=1140&&m<1260)||(m>=270&&m<360)){b="dusk"}d.dataset.theme=a;d.dataset.daylight=b})()`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const posts = getAllPosts().map(({ slug, title }) => ({ slug, title }));
