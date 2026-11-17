@@ -23,7 +23,9 @@ export type Project = {
   live?: string;
   source?: string;
   image?: string;
-  art?: "duel" | "book" | "graph" | "pulse";
+  art?: "duel" | "book" | "graph" | "pulse" | "funnel";
+  /** Badge on the card. Only set what is true: "Live" needs a live link. */
+  status?: "Live" | "Research" | "Building" | "Archived";
   /** Filter chips on /projects. */
   areas: Area[];
   /** Shown on the home page. */
@@ -44,6 +46,7 @@ export const projects: Project[] = [
     tech: ["FastAPI", "Node.js", "Redis", "Kafka", "ClickHouse", "PostgreSQL"],
     year: "2026",
     live: "https://mathduel.me",
+    status: "Live",
     source: "https://github.com/nithinj25/math_dual",
     art: "duel",
     featured: true,
@@ -81,13 +84,16 @@ export const projects: Project[] = [
     slug: "drug-repurposing",
     areas: ["AI"],
     title: "Multi-Agent Drug Repurposing",
-    tagline: "A 10-agent LLM pipeline that screens 19,830 drugs for repurposing.",
+    tagline: "Co-authored paper: a 10-agent LLM pipeline that screens 19,830 drugs for repurposing.",
     blurb:
       "Research on screening drug-repurposing candidates for real-world feasibility, not just link prediction. Co-authored the paper Beyond Link Prediction: Multi-Agent Feasibility Screening of Drug Repurposing.",
     metric: "19,830 drugs · 811× speedup from caching",
     tech: ["Python", "LLM Agents", "DrugBank", "Open Targets"],
     year: "2026",
     source: "https://github.com/nithinj25/drug-research",
+    status: "Research",
+    art: "funnel",
+    featured: true,
     details: [
       "Ten agents score each of 19,830 DrugBank drugs (55K aliases) on mechanism, trials, safety and market.",
       "A mechanistic gate (at least 15% target overlap) exits weak candidates early.",
@@ -137,7 +143,6 @@ export const projects: Project[] = [
     year: "2026",
     source: "https://github.com/nithinj25/trial-matcher",
     art: "pulse",
-    featured: true,
     details: [
       "Runs fully on-device: no patient data is sent anywhere beyond public ClinicalTrials.gov queries.",
       "Works in six languages: English, Hindi, Spanish, Arabic, French and Chinese.",
@@ -154,6 +159,7 @@ export const projects: Project[] = [
     tech: ["Twilio IVR", "Gemini", "FastAPI", "Firebase", "Flutter"],
     year: "2025",
     live: "https://solution-challenge-cb95c.web.app",
+    status: "Live",
     source: "https://github.com/nithinj25/arogyaLink",
     details: [
       "A Twilio voice IVR feeds Gemini-powered agents on a FastAPI backend running on Cloud Run.",

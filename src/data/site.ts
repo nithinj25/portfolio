@@ -42,6 +42,17 @@ export const site = {
   leetcode: "higgsboson25",
 };
 
+// The hero: one-sentence bio, then what you're doing now.
+export const bio =
+  "AI & ML undergraduate in Bengaluru, building real-time systems, low-latency engines and multi-agent LLM pipelines, and proving they work with load tests and latency percentiles.";
+
+export const currently = [
+  "Studying B.E. Artificial Intelligence & Machine Learning at BMSIT&M, CGPA 9.48.",
+  "Core team at Google Developer Groups (DSA & ML) and Tech Head at IEEE.",
+  "Co-author of a paper on multi-agent feasibility screening for drug repurposing.",
+];
+
+// Longer about text. Not shown on the page in this layout; kept for reuse.
 export const about = [
   "I'm an AI & ML undergraduate at BMS Institute of Technology and Management in Bengaluru. I like owning the whole picture: the data model, the WebSocket server, the matching loop, and the pixels on screen. Most of what I build is real-time, and I care about proving it works: load tests, latency percentiles, differential tests.",
   "Lately that has meant a 1v1 mental-arithmetic ladder that stays fair under lag, a lock-free order book in C++17, and co-authoring a paper on multi-agent screening for drug repurposing. Outside my own projects I'm on the GDG core team for DSA & ML and Tech Head at IEEE.",
@@ -98,35 +109,12 @@ export const experience: Experience[] = [
   },
 ];
 
-export type Research = {
-  title: string;
-  project: string;
-  role: string;
-  year: string;
-  points: string[];
-  tech: string[];
-  source?: string;
-};
-
-export const research: Research[] = [
-  {
-    title: "Beyond Link Prediction: Multi-Agent Feasibility Screening of Drug Repurposing",
-    project: "Multi-Agent Drug Repurposing Screening",
-    role: "Co-author",
-    year: "2026",
-    points: [
-      "A 10-agent pipeline scores 19,830 DrugBank drugs (55K aliases) on mechanism, trials, safety and market.",
-      "A mechanistic gate (≥15% target overlap) exits weak candidates early; distributed caching gave an 811× speedup.",
-    ],
-    tech: ["Python", "LLM Agents", "DrugBank", "Open Targets"],
-    source: "https://github.com/nithinj25/drug-research",
-  },
-];
-
 export type Achievement = {
   title: string;
-  /** The result, e.g. "Finalist · Top 12 of 180,000+". */
-  org: string;
+  /** Short result for the badge, e.g. "Finalist". */
+  result: string;
+  /** The rest of the result, e.g. "Top 12 of 180,000+". */
+  detail?: string;
   note?: string;
   year: string;
   url?: string;
@@ -137,31 +125,36 @@ export type Achievement = {
 export const achievements: Achievement[] = [
   {
     title: "EY Techathon",
-    org: "Finalist · Top 12 of 180,000+",
+    result: "Finalist",
+    detail: "Top 12 of 180,000+",
     note: "AI-driven drug repurposing prototype on biomedical data.",
     year: "2026",
   },
   {
     title: "Unisys Innovation Program",
-    org: "Top 20 of 12,760 entries",
+    result: "Top 20",
+    detail: "of 12,760 entries",
     note: "Built InsuraAI for the insurance industry.",
     year: "2025",
   },
   {
     title: "Smart India Hackathon",
-    org: "Top 50 · college level",
+    result: "Top 50",
+    detail: "College level",
     note: "AI automation prototype with edge deployment.",
     year: "2025",
   },
   {
     title: "Hack4Good, IEEE SB NITC",
-    org: "Finalist",
-    note: "National three-round hackathon, with a working prototype.",
+    result: "Finalist",
+    detail: "National, three rounds",
+    note: "Reached the final with a working prototype.",
     year: "2024",
   },
   {
     title: "CodeCon’24, IEEE BMSIT&M",
-    org: "6th place of 50 teams",
+    result: "6th place",
+    detail: "of 50 teams",
     note: "Aptitude, debugging and coding rounds.",
     year: "2024",
   },

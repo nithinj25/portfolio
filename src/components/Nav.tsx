@@ -12,7 +12,7 @@ import { SearchIcon } from "./icons";
 // Links whose href starts with "/#" jump to a section; the others open a page.
 // `wide` links are hidden on small screens to keep the bar from crowding.
 const links = [
-  { href: "/#about", label: "About", section: "about", wide: true },
+  { href: "/#experience", label: "Experience", section: "experience", wide: true },
   { href: "/projects", label: "Projects", section: "projects", wide: false },
   { href: "/blog", label: "Blog", section: "blog", wide: false },
   { href: "/#contact", label: "Contact", section: "contact", wide: true },

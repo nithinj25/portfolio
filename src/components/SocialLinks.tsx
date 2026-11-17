@@ -1,13 +1,14 @@
 import { site } from "@/data/site";
-import { FileIcon, GithubIcon, LinkedinIcon, MailIcon, XIcon } from "./icons";
+import { CodeIcon, FileIcon, GithubIcon, LinkedinIcon, MailIcon, XIcon } from "./icons";
 
-// Round icon links: GitHub, X, LinkedIn, email, résumé.
+// Round icon links: GitHub, X, LinkedIn, LeetCode, email, résumé.
 // A link that is still empty in site.ts shows as a dashed TODO icon, or is
 // left out entirely when `site.showTodos` is false.
 const links = [
   { href: site.socials.github, label: "GitHub", Icon: GithubIcon },
   { href: site.socials.x, label: "X", Icon: XIcon },
   { href: site.socials.linkedin, label: "LinkedIn", Icon: LinkedinIcon },
+  { href: site.leetcode ? `https://leetcode.com/u/${site.leetcode}/` : "", label: "LeetCode", Icon: CodeIcon },
   { href: `mailto:${site.email}`, label: "Email", Icon: MailIcon },
   { href: site.resume, label: "Résumé", Icon: FileIcon },
 ];

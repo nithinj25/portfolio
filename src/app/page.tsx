@@ -4,12 +4,17 @@ import Heatmap from "@/components/Heatmap";
 import PostList, { FeaturedPost } from "@/components/PostList";
 import ProjectCard from "@/components/ProjectCard";
 import SocialLinks from "@/components/SocialLinks";
-import { ArrowUpRight, CloudIcon, CodeIcon, DatabaseIcon, LayoutIcon, PinIcon, ServerIcon, SparkIcon } from "@/components/icons";
+import { ArrowUpRight, CloudIcon, CodeIcon, DatabaseIcon, LayoutIcon, MailIcon, PinIcon, ServerIcon, SparkIcon } from "@/components/icons";
 import { CopyEmail, LocalTime, Reveal, Spotlight } from "@/components/widgets";
-import { about, achievements, competitive, education, experience, focus, headlineStats, research, site, stack } from "@/data/site";
+import { achievements, bio, competitive, currently, education, experience, headlineStats, site, stack } from "@/data/site";
 import { getGithubCalendar, getLeetcode } from "@/lib/activity";
 import { featuredProjects, projects } from "@/lib/projects";
 import { getAllPosts } from "@/lib/posts";
+
+// The page follows the outline of the reference portfolio:
+// hero (bio, now, socials) → experience → projects → hackathons → GitHub
+// activity → DSA & competitive programming → skills → education → blogs,
+// closing with a contact card. The theme and components are this site's own.
 
 /** A numbered section: "02" label, serif title, a rule, then the content. */
 function Section({
@@ -40,14 +45,6 @@ function Section({
         {children}
       </Reveal>
     </section>
-  );
-}
-
-function Chip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-full border border-line bg-card px-2.5 py-1 font-mono text-[11px] leading-none text-muted">
-      {children}
-    </span>
   );
 }
 
@@ -94,7 +91,7 @@ function PlatformCard({
 }
 
 /**
- * One entry on the Experience and Achievements timelines: a logo (or initial)
+ * One entry on the Experience and Education timelines: a logo (or initial)
  * on the rail, then title, organisation and date. The rail line joins entries.
  */
 function TimelineItem({
@@ -105,7 +102,6 @@ function TimelineItem({
   sub,
   note,
   date,
-  todo = false,
 }: {
   logo?: string;
   mark: string;
@@ -114,28 +110,22 @@ function TimelineItem({
   sub: string;
   note?: string;
   date: string;
-  todo?: boolean;
 }) {
   return (
-    <li className={`relative flex gap-5 pb-8 last:pb-0 ${todo ? "text-faint" : ""}`}>
+    <li className="relative flex gap-5 pb-8 last:pb-0">
       {/* The rail: hidden on the last entry so the line ends at its marker. */}
       <span aria-hidden className="absolute bottom-0 left-5 top-12 w-px bg-line [li:last-child>&]:hidden" />
       {logo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={logo} alt="" width={40} height={40} className="relative size-10 shrink-0 rounded-xl border border-line bg-card object-contain" />
       ) : (
-        <span
-          aria-hidden
-          className={`relative grid size-10 shrink-0 place-items-center rounded-xl border bg-card font-serif text-xl italic ${
-            todo ? "border-dashed border-faint" : "border-line"
-          }`}
-        >
+        <span aria-hidden className="relative grid size-10 shrink-0 place-items-center rounded-xl border border-line bg-card font-serif text-xl italic">
           {mark}
         </span>
       )}
       <div className="min-w-0 flex-1 pt-0.5">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-          <h3 className={`tracking-tight ${todo ? "font-mono text-sm" : "text-lg font-medium"}`}>
+          <h3 className="text-lg font-medium tracking-tight">
             {url ? (
               <a href={url} target="_blank" rel="noreferrer" className="link">
                 {title}
@@ -146,7 +136,7 @@ function TimelineItem({
           </h3>
           <span className="font-mono text-xs text-faint">{date}</span>
         </div>
-        <p className={`text-sm ${todo ? "font-mono text-xs" : "text-muted"}`}>{sub}</p>
+        <p className="text-sm text-muted">{sub}</p>
         {note && <p className="mt-2 max-w-[68ch] text-sm leading-relaxed text-muted">{note}</p>}
       </div>
     </li>
@@ -171,47 +161,29 @@ export default async function Home() {
     ...headlineStats,
   ];
 
-  // Sections that would only hold placeholders disappear when showTodos is off.
-  const showExperience = experience.length > 0 || site.showTodos;
-  const showGithub = site.showGithubActivity || site.showTodos;
-  const showLeetcode = Boolean(site.leetcode) || site.showTodos;
-
   // Sections number themselves in the order they actually render.
   let count = 0;
   const next = () => String(++count).padStart(2, "0");
 
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="pt-8">
+      {/* ── Hero: bio, what I'm doing now, socials ───────── */}
+      <section id="about" aria-label="About" className="scroll-mt-24 pt-8">
         <div className="rise">
           <Banner />
         </div>
-        <div className="rise -mt-10 flex items-end justify-between px-4" style={{ "--i": 1 } as React.CSSProperties}>
+        <div className="rise -mt-10 px-4" style={{ "--i": 1 } as React.CSSProperties}>
           {site.avatar ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={site.avatar}
-              alt={site.name}
-              width={88}
-              height={88}
-              className="size-22 rounded-3xl border-4 border-bg object-cover"
-            />
+            <img src={site.avatar} alt={site.name} width={88} height={88} className="size-22 rounded-3xl border-4 border-bg object-cover" />
           ) : (
-            <div
-              aria-hidden
-              className="grid size-22 place-items-center rounded-3xl border-4 border-bg bg-card font-serif text-4xl italic ring-1 ring-line"
-            >
+            <div aria-hidden className="grid size-22 place-items-center rounded-3xl border-4 border-bg bg-card font-serif text-4xl italic ring-1 ring-line">
               {initials}
             </div>
           )}
-          <SocialLinks className="pb-1" />
         </div>
 
-        <div
-          className="rise mt-6 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end"
-          style={{ "--i": 2 } as React.CSSProperties}
-        >
+        <div className="rise mt-6 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start" style={{ "--i": 2 } as React.CSSProperties}>
           <div>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <h1 className="font-serif text-6xl leading-none tracking-tight">{site.name}</h1>
@@ -225,19 +197,39 @@ export default async function Home() {
                 </span>
               )}
             </div>
-            <p className="mt-4 text-lg text-muted">
-              {site.role} <span className="text-faint">/</span> <span className="text-fg">{site.tagline}</span>
-            </p>
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
               <span className="flex items-center gap-1.5">
                 <PinIcon width={14} height={14} /> {site.location}
               </span>
               <LocalTime />
             </div>
+            <p className="mt-5 max-w-[60ch] text-lg leading-relaxed text-fg">{bio}</p>
+            <ul className="mt-4 max-w-[64ch] space-y-2 text-muted">
+              {currently.map((c) => (
+                <li key={c} className="flex gap-3">
+                  <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 rounded-full bg-accent" />
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${site.email}`}
+                className="flex items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-sm font-medium text-bg transition-transform hover:-translate-y-0.5"
+              >
+                <MailIcon width={15} height={15} /> Send an email
+              </a>
+              <Link
+                href="/projects"
+                className="rounded-full border border-line bg-card px-5 py-2.5 text-sm text-muted transition-colors hover:border-faint hover:text-fg"
+              >
+                See projects
+              </Link>
+            </div>
           </div>
 
           {/* Headline numbers */}
-          <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:w-[380px]">
+          <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:mt-2 lg:w-[380px]">
             {stats.map((s) => (
               <div key={s.label} className="flex flex-col-reverse bg-card px-4 py-3.5">
                 <dt className="mt-1 font-mono text-[11px] leading-snug text-muted">{s.label}</dt>
@@ -246,67 +238,91 @@ export default async function Home() {
             ))}
           </dl>
         </div>
+
+        <div className="rise mt-8 flex flex-wrap items-center gap-4 border-y border-line py-4" style={{ "--i": 3 } as React.CSSProperties}>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-faint">Here are my socials</p>
+          <SocialLinks />
+        </div>
       </section>
 
-      {/* ── About ────────────────────────────────────────── */}
-      <Section id="about" n={next()} title="About">
-        <div className="max-w-[68ch] space-y-4 text-[1.0625rem] leading-relaxed text-muted">
-          {about.map((p) => (
-            <p key={p}>{p}</p>
-          ))}
-        </div>
-        <ul className="mt-6 flex flex-wrap gap-2">
-          {focus.map((f) => (
-            <li key={f}>
-              <Chip>{f}</Chip>
+      {/* ── Experience ───────────────────────────────────── */}
+      {experience.length > 0 && (
+        <Section id="experience" n={next()} title="Experience">
+          <ol>
+            {experience.map((e) => (
+              <TimelineItem
+                key={e.company + e.role}
+                logo={e.logo}
+                mark={e.company[0]}
+                title={e.role}
+                url={e.url}
+                sub={e.location ? `${e.company} · ${e.location}` : e.company}
+                note={e.summary}
+                date={`${e.start} – ${e.end}`}
+              />
+            ))}
+          </ol>
+        </Section>
+      )}
+
+      {/* ── Projects ─────────────────────────────────────── */}
+      <Section
+        id="projects"
+        n={next()}
+        title="Projects"
+        aside={
+          <Link href="/projects" className="link text-sm text-muted hover:text-fg">
+            View all {projects.length}
+          </Link>
+        }
+      >
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {featuredProjects.map((p) => (
+            <li key={p.slug}>
+              <ProjectCard p={p} />
             </li>
           ))}
         </ul>
       </Section>
 
-      {/* ── Stack ────────────────────────────────────────── */}
-      <Section id="stack" n={next()} title="Stack">
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {stack.map((group) => {
-            const Icon = STACK_ICONS[group.group] ?? CodeIcon;
-            return (
-              <li key={group.group}>
-                <Spotlight className="h-full rounded-2xl border border-line bg-card p-5">
-                  <h3 className="flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-widest text-muted">
-                    <span className="grid size-8 place-items-center rounded-lg border border-line bg-bg text-accent">
-                      <Icon />
-                    </span>
-                    {group.group}
+      {/* ── Hackathons ───────────────────────────────────── */}
+      {achievements.length > 0 && (
+        <Section id="hackathons" n={next()} title="Hackathons">
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {achievements.map((h, i) => (
+              <li key={h.title} className={i === 0 ? "sm:col-span-2" : ""}>
+                <Spotlight className="flex h-full flex-col rounded-2xl border border-line bg-card p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[11px] text-accent">{h.result}</span>
+                    <span className="font-mono text-xs text-faint">{h.year}</span>
+                  </div>
+                  <h3 className={`mt-4 tracking-tight ${i === 0 ? "font-serif text-3xl leading-tight" : "text-lg font-medium"}`}>
+                    {h.url ? (
+                      <a href={h.url} target="_blank" rel="noreferrer" className="link">
+                        {h.title}
+                      </a>
+                    ) : (
+                      h.title
+                    )}
                   </h3>
-                  <ul className="mt-4 flex flex-wrap gap-1.5">
-                    {group.items.map((item) => (
-                      <li
-                        key={item}
-                        className="cursor-default rounded-md border border-line px-2 py-1 text-sm transition-colors duration-200 hover:border-accent/50 hover:bg-accent/10 hover:text-accent"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  {h.detail && <p className="mt-1 font-mono text-xs text-muted">{h.detail}</p>}
+                  {h.note && <p className="mt-3 max-w-[68ch] text-sm leading-relaxed text-muted">{h.note}</p>}
                 </Spotlight>
               </li>
-            );
-          })}
-        </ul>
-      </Section>
-
-      {/* ── Activity: heatmaps (placeholders until linked in site.ts) ── */}
-      {(showGithub || showLeetcode) && (
-        <Section id="activity" n={next()} title="Activity">
-          <div className="grid gap-4">
-            {showGithub && <Heatmap source="github" handle={site.showGithubActivity ? site.handle : ""} data={github} />}
-            {showLeetcode && <Heatmap source="leetcode" handle={site.leetcode} data={leetcode?.calendar ?? null} />}
-          </div>
+            ))}
+          </ul>
         </Section>
       )}
 
-      {/* ── Competitive programming ──────────────────────── */}
-      <Section id="competitive" n={next()} title="Competitive programming">
+      {/* ── GitHub activity ──────────────────────────────── */}
+      {(site.showGithubActivity || site.showTodos) && (
+        <Section id="activity" n={next()} title="GitHub activity">
+          <Heatmap source="github" handle={site.showGithubActivity ? site.handle : ""} data={github} />
+        </Section>
+      )}
+
+      {/* ── DSA & competitive programming ───────────────── */}
+      <Section id="competitive" n={next()} title="DSA & competitive programming">
         <p className="-mt-2 mb-6 max-w-[68ch] text-muted">{competitive.note}</p>
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {site.leetcode && (
@@ -352,112 +368,43 @@ export default async function Home() {
             </li>
           ))}
         </ul>
+        {(site.leetcode || site.showTodos) && (
+          <div className="mt-4">
+            <Heatmap source="leetcode" handle={site.leetcode} data={leetcode?.calendar ?? null} />
+          </div>
+        )}
       </Section>
 
-      {/* ── Experience ───────────────────────────────────── */}
-      {showExperience && (
-        <Section id="experience" n={next()} title="Experience">
-          <ol>
-            {experience.map((e) => (
-              <TimelineItem
-                key={e.company + e.role}
-                logo={e.logo}
-                mark={e.company[0]}
-                title={e.role}
-                url={e.url}
-                sub={e.location ? `${e.company} · ${e.location}` : e.company}
-                note={e.summary}
-                date={`${e.start} – ${e.end}`}
-              />
-            ))}
-            {experience.length === 0 && (
-              <TimelineItem todo mark="?" title="TODO: add your experience" sub="Role · Organisation (src/data/site.ts)" date="Dates" />
-            )}
-          </ol>
-        </Section>
-      )}
-
-      {/* ── Research ─────────────────────────────────────── */}
-      {research.length > 0 && (
-        <Section id="research" n={next()} title="Research">
-          <ul className="grid gap-4">
-            {research.map((r) => (
-              <li key={r.title}>
-                <Spotlight className="rounded-2xl border border-line bg-card p-6 sm:p-7">
-                  <p className="flex flex-wrap items-center gap-3 font-mono text-xs text-faint">
-                    <span className="rounded-full bg-accent/10 px-2 py-0.5 text-accent">Paper</span>
-                    <span>{r.role}</span>
-                    <span>{r.year}</span>
-                  </p>
-                  <h3 className="mt-4 max-w-[30ch] font-serif text-3xl leading-[1.1] tracking-tight">{r.title}</h3>
-                  <p className="mt-2 text-sm text-muted">{r.project}</p>
-                  <ul className="mt-5 max-w-[68ch] space-y-2.5 text-[0.95rem] leading-relaxed text-muted">
-                    {r.points.map((pt) => (
-                      <li key={pt} className="flex gap-3">
-                        <span aria-hidden className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-accent" />
-                        <span>{pt}</span>
+      {/* ── Skills & technologies ────────────────────────── */}
+      <Section id="skills" n={next()} title="Skills & technologies">
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {stack.map((group) => {
+            const Icon = STACK_ICONS[group.group] ?? CodeIcon;
+            return (
+              <li key={group.group}>
+                <Spotlight className="h-full rounded-2xl border border-line bg-card p-5">
+                  <h3 className="flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-widest text-muted">
+                    <span className="grid size-8 place-items-center rounded-lg border border-line bg-bg text-accent">
+                      <Icon />
+                    </span>
+                    {group.group}
+                  </h3>
+                  <ul className="mt-4 flex flex-wrap gap-1.5">
+                    {group.items.map((item) => (
+                      <li
+                        key={item}
+                        className="cursor-default rounded-md border border-line px-2 py-1 text-sm transition-colors duration-200 hover:border-accent/50 hover:bg-accent/10 hover:text-accent"
+                      >
+                        {item}
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-                    <ul className="flex flex-wrap gap-1.5">
-                      {r.tech.map((t) => (
-                        <li key={t}>
-                          <Chip>{t}</Chip>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="flex items-center gap-4 text-sm">
-                      <Link href="/projects/drug-repurposing" className="link text-muted hover:text-accent">
-                        Project page
-                      </Link>
-                      {r.source && (
-                        <a href={r.source} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-muted transition-colors hover:text-accent">
-                          GitHub <ArrowUpRight width={13} height={13} />
-                        </a>
-                      )}
-                    </div>
-                  </div>
                 </Spotlight>
               </li>
-            ))}
-          </ul>
-        </Section>
-      )}
-
-      {/* ── Projects ─────────────────────────────────────── */}
-      <Section
-        id="projects"
-        n={next()}
-        title="Projects"
-        aside={
-          <Link href="/projects" className="link text-sm text-muted hover:text-fg">
-            All {projects.length} projects
-          </Link>
-        }
-      >
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {featuredProjects.map((p) => (
-            <li key={p.slug}>
-              <ProjectCard p={p} />
-            </li>
-          ))}
+            );
+          })}
         </ul>
       </Section>
-
-      {/* ── Achievements ─────────────────────────────────── */}
-      {(achievements.length > 0 || site.showTodos) && (
-        <Section id="achievements" n={next()} title="Achievements">
-          <ul>
-            {achievements.map((h) => (
-              <TimelineItem key={h.title} logo={h.logo} mark={h.title[0]} title={h.title} url={h.url} sub={h.org} note={h.note} date={h.year} />
-            ))}
-            {achievements.length === 0 && (
-              <TimelineItem todo mark="?" title="TODO: add your achievements" sub="Award · Organisation (src/data/site.ts)" date="Year" />
-            )}
-          </ul>
-        </Section>
-      )}
 
       {/* ── Education ──────────────────────────────────── */}
       {education.length > 0 && (
@@ -477,15 +424,15 @@ export default async function Home() {
         </Section>
       )}
 
-      {/* ── Blog ─────────────────────────────────────────── */}
+      {/* ── Blogs ─────────────────────────────────────────── */}
       {latest && (
         <Section
           id="blog"
           n={next()}
-          title="Blog"
+          title="Blogs"
           aside={
             <Link href="/blog" className="link text-sm text-muted hover:text-fg">
-              All posts
+              View all
             </Link>
           }
         >
@@ -501,9 +448,7 @@ export default async function Home() {
             <h2 id="contact-title" className="font-serif text-5xl leading-tight tracking-tight">
               Let&apos;s build something <em className="text-accent">fast</em>.
             </h2>
-            <p className="mx-auto mt-3 max-w-sm text-muted">
-              Have a role, a project or a hard latency problem? My inbox is open.
-            </p>
+            <p className="mx-auto mt-3 max-w-sm text-muted">Have a role, a project or a hard latency problem? My inbox is open.</p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <a
                 href={`mailto:${site.email}`}
@@ -512,10 +457,6 @@ export default async function Home() {
                 {site.email}
               </a>
               <CopyEmail className="rounded-full border border-line px-5 py-2.5 text-sm text-muted transition-colors hover:text-fg" />
-            </div>
-            <div className="mt-8 flex flex-col items-center gap-3 border-t border-line pt-6">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-faint">Or find me on</p>
-              <SocialLinks />
             </div>
           </Spotlight>
         </Reveal>

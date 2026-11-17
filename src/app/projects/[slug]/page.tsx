@@ -36,7 +36,18 @@ export default async function ProjectPage({ params }: Props) {
       </Link>
 
       <header className="rise mt-8" style={{ "--i": 1 } as React.CSSProperties}>
-        <p className="font-mono text-xs text-faint">{p.year}</p>
+        <p className="flex items-center gap-3 font-mono text-xs text-faint">
+          {p.year}
+          {p.status && (
+          <span
+            className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+              p.status === "Live" ? "bg-good/15 text-good" : "bg-accent/10 text-accent"
+            }`}
+          >
+            {p.status}
+          </span>
+          )}
+        </p>
         <h1 className="mt-3 text-balance font-serif text-[2.75rem] leading-[1.05] tracking-tight">{p.title}</h1>
         <p className="mt-4 max-w-[68ch] text-pretty text-lg leading-relaxed text-muted">{p.blurb}</p>
         {p.metric && <p className="mt-4 font-mono text-sm text-accent">{p.metric}</p>}

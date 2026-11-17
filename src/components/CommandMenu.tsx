@@ -12,15 +12,14 @@ export const OPEN_COMMAND_MENU = "open-command-menu";
 // Home page sections, in page order. `id` matches the section's id attribute.
 const SECTIONS = [
   { id: "about", label: "About" },
-  { id: "stack", label: "Stack" },
-  { id: "activity", label: "Activity" },
-  { id: "competitive", label: "Competitive programming" },
   { id: "experience", label: "Experience" },
-  { id: "research", label: "Research" },
   { id: "projects", label: "Projects" },
-  { id: "achievements", label: "Achievements" },
+  { id: "hackathons", label: "Hackathons" },
+  { id: "activity", label: "GitHub activity" },
+  { id: "competitive", label: "DSA & competitive programming" },
+  { id: "skills", label: "Skills & technologies" },
   { id: "education", label: "Education" },
-  { id: "blog", label: "Blog" },
+  { id: "blog", label: "Blogs" },
   { id: "contact", label: "Contact" },
 ];
 

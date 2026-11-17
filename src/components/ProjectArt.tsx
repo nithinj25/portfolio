@@ -163,7 +163,39 @@ function Pulse() {
   );
 }
 
-const ART = { duel: Duel, book: Book, graph: Graph, pulse: Pulse };
+function Funnel() {
+  const stages = [
+    { label: "19,830 drugs", w: 260 },
+    { label: "mechanism gate ≥15%", w: 204 },
+    { label: "trials · safety · market", w: 150 },
+    { label: "shortlist", w: 84 },
+  ];
+  return (
+    <>
+      {stages.map((s, i) => (
+        <g key={s.label} transform={`translate(${160 - s.w / 2} ${30 + i * 36})`}>
+          <rect
+            width={s.w}
+            height="18"
+            rx="3"
+            fill={i === stages.length - 1 ? "var(--accent)" : "var(--fg)"}
+            opacity={i === stages.length - 1 ? 1 : 0.14 + i * 0.05}
+            className="art-grow"
+            style={{ transformOrigin: "center", animationDelay: `${-i * 0.5}s` }}
+          />
+          <text x={s.w / 2} y="12.5" textAnchor="middle" fontSize="8" fill={i === stages.length - 1 ? "var(--bg)" : "var(--muted)"} style={mono}>
+            {s.label}
+          </text>
+        </g>
+      ))}
+      <text x="160" y="186" textAnchor="middle" fontSize="8" fill="var(--accent)" letterSpacing="1.5" style={mono}>
+        10 AGENTS · 811× CACHE SPEEDUP
+      </text>
+    </>
+  );
+}
+
+const ART = { duel: Duel, book: Book, graph: Graph, pulse: Pulse, funnel: Funnel };
 
 export default function ProjectArt({ kind, title }: { kind: NonNullable<Project["art"]>; title: string }) {
   const Art = ART[kind];

@@ -85,7 +85,18 @@ export default function ProjectCard({ p }: { p: Project }) {
               {p.title}
             </Link>
           </h3>
-          <span className="font-mono text-xs text-faint">{p.year}</span>
+          <span className="flex shrink-0 items-center gap-2">
+            {p.status && (
+            <span
+              className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+                p.status === "Live" ? "bg-good/15 text-good" : "bg-accent/10 text-accent"
+              }`}
+            >
+              {p.status}
+            </span>
+          )}
+            <span className="font-mono text-xs text-faint">{p.year}</span>
+          </span>
         </div>
         <p className="mt-2 text-sm leading-relaxed text-muted">{p.tagline}</p>
         {p.metric && <p className="mt-2 font-mono text-xs text-accent">{p.metric}</p>}
