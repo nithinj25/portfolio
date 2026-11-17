@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { skyPhase, watchSkyPhase, type SkyPhase } from "@/lib/sky";
 
 // Procedural pixel landscape drawn at 320×90 and scaled up with crisp pixels.
 // Dark theme: night sky, twinkling stars, glowing moon, shooting stars.
@@ -40,6 +41,18 @@ const SCENES = {
   },
 };
 type Theme = keyof typeof SCENES;
+
+// Time-of-day skies (see src/lib/sky.ts). Phases not listed use the theme's base sky.
+const SKIES: Record<Theme, Partial<Record<SkyPhase, string[]>>> = {
+  dark: {
+    dusk: ["#0b0820", "#1a0f38", "#33164e", "#5a1d5c", "#8f2d5a", "#c8483f", "#ee7a3c", "#ffb054"],
+    dawn: ["#0a1030", "#141d4a", "#263466", "#4a4a86", "#8a6296", "#d48a8a", "#f6b27a", "#ffd9a0"],
+  },
+  light: {
+    dawn: ["#7f9fe0", "#a3b4ea", "#c7c4ee", "#e6cfe8", "#f6d6d6", "#fbdcc0", "#ffe2b0", "#ffe9c4"],
+    dusk: ["#5b7fd0", "#8b93d6", "#b9a0cf", "#e0a9b6", "#f3b497", "#f8c07f", "#fbd08f", "#ffe0a8"],
+  },
+};
 
 function rng(seed: number) {
   return () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
@@ -94,10 +107,12 @@ export default function Banner() {
     const sky = layer(W);
     const land = { far: layer(), mid: layer(), near: layer() };
     let theme: Theme = "dark";
+    let scene: (typeof SCENES)[Theme] = SCENES.dark;
 
     const paintStatic = () => {
       theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
-      const s = SCENES[theme];
+      scene = { ...SCENES[theme], sky: SKIES[theme][skyPhase()] ?? SCENES[theme].sky };
+      const s = scene;
 
       const sctx = sky.getContext("2d")!;
       const n = s.sky.length - 1;
@@ -146,7 +161,7 @@ export default function Banner() {
 
     const draw = (time: number) => {
       const t = (now = time / 1000);
-      const s = SCENES[theme];
+      const s = scene;
       px += (tx - px) * 0.12;
       py += (ty - py) * 0.12;
       const off = (k: number) => Math.round(px * k);
@@ -253,10 +268,12 @@ export default function Banner() {
     const onVisibility = () => (document.hidden ? stop() : start());
     document.addEventListener("visibilitychange", onVisibility);
 
-    const mo = new MutationObserver(() => {
+    const repaint = () => {
       paintStatic();
       if (reduce) draw(0);
-    });
+    };
+    const mo = new MutationObserver(repaint);
+    const unwatchSky = watchSkyPhase(repaint);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     const onMove = (e: PointerEvent) => {
@@ -280,6 +297,7 @@ export default function Banner() {
       stop();
       io.disconnect();
       mo.disconnect();
+      unwatchSky();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("click", onClick);

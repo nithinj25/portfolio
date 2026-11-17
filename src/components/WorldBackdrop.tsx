@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { skyPhase, watchSkyPhase, type SkyPhase } from "@/lib/sky";
 
 // One fixed, full-screen pixel scene behind the whole site. Scrolling the page
 // moves a camera from the open sky down to the ground:
@@ -92,6 +93,57 @@ const SCENES = {
   },
 };
 
+// Time-of-day variants. Each one overrides part of its theme's base scene
+// (see src/lib/sky.ts for which hours map to which phase).
+type Scene = (typeof SCENES)["dark"] & { starDim: number; orbLow: boolean };
+const VARIANTS: Record<keyof typeof SCENES, Partial<Record<SkyPhase, Partial<Scene>>>> = {
+  dark: {
+    // Sunset: a hotter, taller glow and a low moon.
+    dusk: {
+      glow: ["#2a1a4a", "#6e2f62", "#b5483f", "#f08a4b"],
+      sky: ["#0d0c20", "#110d28", "#160f31", "#1c113a", "#231343", "#2b164c"],
+      starDim: 0.6,
+      orbLow: true,
+    },
+    // First light: blue-violet sky, pink and gold on the horizon, stars fading out.
+    dawn: {
+      glow: ["#1f2350", "#5a3a72", "#c4687a", "#f6b27a"],
+      sky: ["#0c0f22", "#0f142b", "#131a35", "#182140", "#1d294b", "#233257"],
+      starDim: 0.35,
+      orbLow: true,
+      orb: "#fbe3c4",
+      orbShade: "#e0b99a",
+    },
+  },
+  light: {
+    // Sunrise: lilac sky, peach horizon, a low warm sun.
+    dawn: {
+      glow: ["#e9e3f3", "#f4d9e2", "#fbd3c0", "#ffd9a0"],
+      sky: ["#f5f2f6", "#efeaf4", "#e9e2f1", "#e3daef", "#ddd3ed", "#d6cbea"],
+      orb: "#ffe2b0",
+      orbShade: "#ffc98a",
+      orbLow: true,
+    },
+    // Golden hour: amber light and warmer, dusky hills.
+    dusk: {
+      glow: ["#f3e6da", "#f7d4b6", "#f7ba8b", "#f29a5c"],
+      sky: ["#f7f1eb", "#f4e9de", "#f1e0d1", "#eed7c4", "#ebceb7", "#e8c5aa"],
+      far: "#c3a6ae",
+      mid: "#977b93",
+      near: "#5d4c6e",
+      orb: "#ffd28a",
+      orbShade: "#f7a95a",
+      orbLow: true,
+    },
+  },
+};
+const resolveScene = (theme: keyof typeof SCENES, phase: SkyPhase): Scene => ({
+  ...SCENES[theme],
+  starDim: 1,
+  orbLow: false,
+  ...VARIANTS[theme][phase],
+});
+
 type Star = { x: number; y: number; depth: number; phase: number; speed: number; big: boolean; ox: number; oy: number; glow: number };
 type Comet = { x: number; y: number; vx: number; vy: number };
 type Spark = { x: number; y: number; vx: number; vy: number; born: number; life: number; rgb: string };
@@ -120,6 +172,7 @@ export default function WorldBackdrop() {
     const make = () => document.createElement("canvas");
     const layers = { sky: make(), glow: make(), far: make(), mid: make(), near: make() };
     let theme: keyof typeof SCENES = "dark";
+    let scene = resolveScene("dark", "night");
     let W = 0;
     let H = 0;
     let fireX = 0;
@@ -157,7 +210,8 @@ export default function WorldBackdrop() {
     /** Paints the land layers as they sit once you have fully landed (camera = 1). */
     const build = () => {
       theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
-      const s = SCENES[theme];
+      scene = resolveScene(theme, skyPhase());
+      const s = scene;
       W = canvas.width = Math.ceil(innerWidth / S);
       H = canvas.height = Math.ceil(innerHeight / S);
       for (const l of Object.values(layers)) {
@@ -258,7 +312,7 @@ export default function WorldBackdrop() {
 
     const draw = (time: number, dt: number) => {
       const t = (now = time / 1000);
-      const s = SCENES[theme];
+      const s = scene;
 
       const max = document.documentElement.scrollHeight - innerHeight;
       const target = reduce || max < 40 ? 0 : clamp01(scrollY / max);
@@ -302,7 +356,7 @@ export default function WorldBackdrop() {
         st.oy += ((pull ? (dy / (dist || 1)) * pull * 5 : 0) - st.oy) * 0.1;
         st.glow += (pull - st.glow) * 0.12;
         const twinkle = reduce ? 0.55 : 0.4 + 0.3 * Math.sin(t * st.speed + st.phase);
-        drawStar(Math.round(st.x + st.ox), Math.round(baseY + st.oy), s.star, Math.min(1, twinkle * (theme === "light" ? 0.5 : 0.8) + st.glow * 0.7), st.big || st.glow > 0.4);
+        drawStar(Math.round(st.x + st.ox), Math.round(baseY + st.oy), s.star, Math.min(1, twinkle * (theme === "light" ? 0.5 : 0.8) + st.glow * 0.7) * s.starDim, st.big || st.glow > 0.4);
       }
       // One brighter star for every comet caught.
       for (let i = 0; i < Math.min(caught, MAX_CAUGHT_STARS); i++) {
@@ -472,7 +526,7 @@ export default function WorldBackdrop() {
       ctx.globalAlpha = 1;
 
       const ox = Math.round(W * 0.8);
-      const oy = Math.round(H * 0.38 + (1 - e) * H * 0.75);
+      const oy = Math.round(H * (s.orbLow ? 0.56 : 0.38) + (1 - e) * H * 0.75); // low on the horizon at dawn and dusk
       if (oy < H + 10)
         for (let y = -8; y <= 8; y++)
           for (let x = -8; x <= 8; x++) {
@@ -656,7 +710,7 @@ export default function WorldBackdrop() {
       const c = near(ev.clientX / S, ev.clientY / S);
       if (!c) return;
       comets = comets.filter((x) => x !== c);
-      burst(c.x, c.y, 16, SCENES[theme].caught, 30);
+      burst(c.x, c.y, 16, scene.caught, 30);
       pops.push({ x: c.x, y: c.y, born: now });
       if (caught < MAX_CAUGHT_STARS) caughtBorn.set(caught, now);
       caught += 1;
@@ -667,6 +721,7 @@ export default function WorldBackdrop() {
       } catch {}
       document.body.style.cursor = "";
     };
+    const unwatchSky = watchSkyPhase(rebuild);
     const mo = new MutationObserver(rebuild);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
@@ -681,6 +736,7 @@ export default function WorldBackdrop() {
     return () => {
       stop();
       mo.disconnect();
+      unwatchSky();
       document.body.style.cursor = "";
       removeEventListener("resize", rebuild);
       document.removeEventListener("visibilitychange", start);
