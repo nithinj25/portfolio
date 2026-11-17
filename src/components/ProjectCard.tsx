@@ -92,7 +92,7 @@ export default function ProjectCard({ p, wide = false }: { p: Project; wide?: bo
             {p.status && (
             <span
               className={`rounded-full px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider ${
-                p.status === "Live" ? "bg-good/15 text-good" : "bg-accent/10 text-accent"
+                p.status === "Live" ? "bg-good/15 text-good" : "bg-accent/10 text-accent-strong"
               }`}
             >
               {p.status}

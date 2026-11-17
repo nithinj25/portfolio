@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { site } from "@/data/site";
-import { OPEN_COMMAND_MENU } from "./CommandMenu";
+import { OPEN_COMMAND_MENU } from "./commandEvents";
 import ThemeToggle from "./ThemeToggle";
 import { SearchIcon } from "./icons";
 
@@ -76,11 +76,11 @@ export default function Nav() {
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event(OPEN_COMMAND_MENU))}
-            aria-label="Open command menu"
             aria-keyshortcuts="Control+K Meta+K"
             className="ml-2 flex h-11 items-center gap-2 sm:h-8 rounded-full border border-line px-2.5 text-muted transition-colors hover:border-faint hover:text-fg"
           >
             <SearchIcon width={14} height={14} />
+            <span className="sr-only">Open command menu</span>
             <kbd className="hidden font-mono text-[11px] sm:inline">Ctrl K</kbd>
           </button>
           <ThemeToggle />

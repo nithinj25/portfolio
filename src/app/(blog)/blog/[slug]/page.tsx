@@ -57,7 +57,7 @@ export default async function PostPage({ params }: Props) {
         {post.tags.length > 0 && (
           <p className="flex flex-wrap justify-center gap-2">
             {post.tags.map((t) => (
-              <span key={t} className="rounded-full bg-accent/10 px-2.5 py-1 font-mono text-xs text-accent">
+              <span key={t} className="rounded-full bg-accent/10 px-2.5 py-1 font-mono text-xs text-accent-strong">
                 {t}
               </span>
             ))}

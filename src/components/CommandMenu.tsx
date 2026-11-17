@@ -7,7 +7,7 @@ import { site } from "@/data/site";
 import { cycleThemeMode, setThemeMode } from "./ThemeToggle";
 import { SearchIcon } from "./icons";
 
-export const OPEN_COMMAND_MENU = "open-command-menu";
+import { OPEN_COMMAND_MENU } from "./commandEvents";
 
 // Home page sections, in page order. `id` matches the section's id attribute.
 const SECTIONS = [
@@ -31,11 +31,12 @@ type Props = {
 const itemCls =
   "flex cursor-pointer items-center justify-between gap-4 rounded-lg px-3 py-2 text-sm data-[selected=true]:bg-line/70";
 
-export default function CommandMenu({ posts, projects }: Props) {
+/** Loaded on demand by CommandMenuLoader; `startOpen` opens it as it mounts. */
+export default function CommandMenu({ posts, projects, startOpen = false }: Props & { startOpen?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const opener = useRef<Element | null>(null);
+  const [open, setOpen] = useState(startOpen);
+  const opener = useRef<Element | null>(typeof document === "undefined" ? null : document.activeElement);
 
   useEffect(() => {
     const show = () => {

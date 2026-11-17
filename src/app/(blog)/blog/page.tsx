@@ -41,7 +41,7 @@ export default function BlogIndex() {
             <img src={latest.cover} alt={latest.coverAlt ?? ""} className="mb-8 w-full rounded-2xl border border-line object-cover" />
           )}
           <p className="flex flex-wrap items-center gap-3 font-mono text-xs text-faint">
-            <span className="rounded-full bg-accent/10 px-2 py-0.5 text-accent">Latest</span>
+            <span className="rounded-full bg-accent/10 px-2 py-0.5 text-accent-strong">Latest</span>
             <time dateTime={latest.date}>{formatDate(latest.date)}</time>
             <span>{latest.minutes} min read</span>
           </p>

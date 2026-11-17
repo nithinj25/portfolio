@@ -66,7 +66,7 @@
   --color-good: var(--good);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
 }
 
 html {
@@ -91,6 +91,12 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* Accent text on an accent-tinted pill: nudged toward the text colour so it
+   keeps 4.5:1 contrast on the tint in every theme. */
+.text-accent-strong {
+  color: color-mix(in oklab, var(--accent) 78%, var(--fg));
 }
 
 /* Underline that draws in from the left. */

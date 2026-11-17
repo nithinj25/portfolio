@@ -13,7 +13,7 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
   return (
     <Spotlight className="group relative mb-2 rounded-2xl border border-line bg-card p-6 transition duration-300 hover:-translate-y-0.5 hover:border-accent/50 motion-reduce:transform-none sm:p-7">
       <p className="flex items-center gap-3 font-mono text-xs text-faint">
-        <span className="rounded-full bg-accent/10 px-2 py-0.5 text-accent">Latest</span>
+        <span className="rounded-full bg-accent/10 px-2 py-0.5 text-accent-strong">Latest</span>
         <time dateTime={post.date}>{formatDate(post.date)}</time>
         <span>{post.minutes} min read</span>
       </p>

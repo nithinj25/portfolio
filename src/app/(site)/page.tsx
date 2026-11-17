@@ -293,7 +293,7 @@ export default async function Home() {
               <li key={h.title} className={i === 0 ? "sm:col-span-2" : ""}>
                 <Spotlight className="flex h-full flex-col rounded-2xl border border-line bg-card p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-xs text-accent">{h.result}</span>
+                    <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-xs text-accent-strong">{h.result}</span>
                     <span className="font-mono text-xs text-faint">{h.year}</span>
                   </div>
                   <h3 className={`mt-4 tracking-tight ${i === 0 ? "font-serif text-3xl leading-tight" : "text-lg font-medium"}`}>
@@ -393,7 +393,7 @@ export default async function Home() {
                     {group.items.map((item) => (
                       <li
                         key={item}
-                        className="cursor-default rounded-md border border-line px-2 py-1 text-sm transition-colors duration-200 hover:border-accent/50 hover:bg-accent/10 hover:text-accent"
+                        className="cursor-default rounded-md border border-line px-2 py-1 text-sm transition-colors duration-200 hover:border-accent/50 hover:bg-accent/10 hover:text-accent-strong"
                       >
                         {item}
                       </li>

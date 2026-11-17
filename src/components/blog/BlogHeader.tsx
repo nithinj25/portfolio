@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { site } from "@/data/site";
-import { OPEN_COMMAND_MENU } from "../CommandMenu";
+import { OPEN_COMMAND_MENU } from "../commandEvents";
 import ThemeToggle from "../ThemeToggle";
 import { ArrowLeft, SearchIcon } from "../icons";
 
@@ -58,10 +58,11 @@ export default function BlogHeader() {
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event(OPEN_COMMAND_MENU))}
-            aria-label="Search posts and pages"
+            aria-keyshortcuts="Control+K Meta+K"
             className="flex h-11 items-center gap-2 rounded-full border border-line px-3 text-muted transition-colors hover:border-faint hover:text-fg sm:h-8"
           >
             <SearchIcon width={14} height={14} />
+            <span className="sr-only">Search posts and pages</span>
             <kbd className="hidden font-mono text-[11px] sm:inline">Ctrl K</kbd>
           </button>
           <ThemeToggle />

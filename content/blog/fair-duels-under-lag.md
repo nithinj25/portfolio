@@ -40,7 +40,7 @@ Matchmaking has the same shape of problem. Two players polling at once must neve
 
 I load tested it against a staging box sized the same as production (2 vCPU, 4 GiB), over real HTTPS and WSS, with each virtual user playing full duels and getting 15% of answers wrong on purpose.
 
-| | 10 players | 400 players |
+| Metric | 10 players | 400 players |
 |---|---|---|
 | Answer round trip p95 | 5 ms | 13 ms |
 | Duels completed | 16 | 1,387 |

@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import "@fontsource/instrument-serif/400.css";
-import "@fontsource/instrument-serif/400-italic.css";
+import { geistMono, instrumentSerif } from "./fonts";
 import "./globals.css";
-import CommandMenu from "@/components/CommandMenu";
+import CommandMenuLoader from "@/components/CommandMenuLoader";
 import { site } from "@/data/site";
 import { getAllPosts } from "@/lib/posts";
 import { projects } from "@/lib/projects";
@@ -36,7 +34,7 @@ const themeScript = `(function(){var d=document.documentElement,t;try{t=localSto
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const posts = getAllPosts().map(({ slug, title }) => ({ slug, title }));
   return (
-    <html lang="en" data-theme="dark" data-scroll-behavior="smooth" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="dark" data-scroll-behavior="smooth" className={`${GeistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
@@ -48,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
-        <CommandMenu posts={posts} projects={projects.map(({ slug, title, tagline }) => ({ slug, title, tagline }))} />
+        <CommandMenuLoader posts={posts} projects={projects.map(({ slug, title, tagline }) => ({ slug, title, tagline }))} />
       </body>
     </html>
   );

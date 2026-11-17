@@ -12,6 +12,7 @@ export default function ProjectGrid({ projects }: { projects: Project[] }) {
 
   return (
     <>
+      <h2 className="sr-only">All projects</h2>
       <div role="group" aria-label="Filter projects by area" className="flex flex-wrap gap-2">
         {(["All", ...AREAS] as const).map((a) => (
           <button
