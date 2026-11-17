@@ -72,8 +72,8 @@ export default function Heatmap({ source }: { source: Source }) {
           </div>
         </div>
         {!linked && (
-          <p className="pointer-events-none absolute inset-0 grid place-items-center">
-            <span className="rounded-lg border border-dashed border-faint bg-card px-3 py-1.5 font-mono text-[11px] text-muted">
+          <p className="pointer-events-none absolute inset-0 grid place-items-center px-3 text-center">
+            <span className="max-w-full rounded-lg border border-dashed border-faint bg-card px-3 py-1.5 font-mono text-[11px] leading-relaxed text-muted">
               {failed ? `Could not load ${name} activity` : `Placeholder · add your ${name} in src/data/site.ts`}
             </span>
           </p>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PostList from "@/components/PostList";
+import PostList, { FeaturedPost } from "@/components/PostList";
 import { RssIcon } from "@/components/icons";
 import { getAllPosts } from "@/lib/posts";
 
@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 
 export default function BlogIndex() {
   const posts = getAllPosts();
-  const years = [...new Set(posts.map((p) => p.date.slice(0, 4)))];
+  const [latest, ...rest] = posts;
+  const years = [...new Set(rest.map((p) => p.date.slice(0, 4)))];
 
   return (
     <div className="pt-12">
@@ -31,10 +32,16 @@ export default function BlogIndex() {
 
       {posts.length === 0 && <p className="mt-16 text-muted">Nothing published yet. The first post is on its way.</p>}
 
+      {latest && (
+        <div className="rise mt-10" style={{ "--i": 1 } as React.CSSProperties}>
+          <FeaturedPost post={latest} />
+        </div>
+      )}
+
       {years.map((year, i) => (
-        <section key={year} className="rise mt-12" style={{ "--i": i + 1 } as React.CSSProperties} aria-label={`Posts from ${year}`}>
+        <section key={year} className="rise mt-12" style={{ "--i": i + 2 } as React.CSSProperties} aria-label={`Posts from ${year}`}>
           <h2 className="mb-3 font-mono text-xs tracking-widest text-faint">{year}</h2>
-          <PostList posts={posts.filter((p) => p.date.startsWith(year))} />
+          <PostList posts={rest.filter((p) => p.date.startsWith(year))} />
         </section>
       ))}
     </div>

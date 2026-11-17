@@ -7,6 +7,9 @@
 //  diagram (`art`) or a marked TODO slot.
 // ─────────────────────────────────────────────────────────────
 
+export const AREAS = ["Real-time", "Systems", "AI", "Full-stack"] as const;
+export type Area = (typeof AREAS)[number];
+
 export type Project = {
   slug: string;
   title: string;
@@ -21,6 +24,8 @@ export type Project = {
   source?: string;
   image?: string;
   art?: "duel" | "book" | "graph" | "pulse";
+  /** Filter chips on /projects. */
+  areas: Area[];
   /** Shown on the home page. */
   featured?: boolean;
   /** Bullet points for the project page. Leave out to show a TODO there. */
@@ -30,6 +35,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "mathduel",
+    areas: ["Real-time", "Full-stack"],
     title: "MathDuel",
     tagline: "Real-time 1v1 mental-arithmetic duels on a Glicko-2 ladder.",
     blurb:
@@ -50,6 +56,7 @@ export const projects: Project[] = [
   },
   {
     slug: "orderbook-cpp",
+    areas: ["Systems"],
     title: "orderbook_cpp",
     tagline: "A lock-free limit order book matching engine in C++17.",
     blurb:
@@ -69,6 +76,7 @@ export const projects: Project[] = [
   },
   {
     slug: "devlens",
+    areas: ["AI", "Full-stack"],
     title: "DevLens",
     tagline: "AI repository analyzer and recruiter intelligence platform.",
     blurb:
@@ -87,6 +95,7 @@ export const projects: Project[] = [
   },
   {
     slug: "clinical-trial-matcher",
+    areas: ["AI"],
     title: "Clinical Trial Matcher",
     tagline: "On-device AI that matches cancer patients to clinical trials.",
     blurb:
@@ -106,6 +115,7 @@ export const projects: Project[] = [
   },
   {
     slug: "arogyalink",
+    areas: ["AI"],
     title: "ArogyaLink",
     tagline: "Emergency healthcare coordination for rural India, by phone call.",
     blurb: "Emergency healthcare coordination for rural India: one phone call, any language, instant dispatch.",
@@ -121,6 +131,7 @@ export const projects: Project[] = [
   },
   {
     slug: "ws-auction",
+    areas: ["Real-time"],
     title: "WS Auction",
     tagline: "Real-time multiplayer auction game in an 80s arcade shell.",
     blurb: "Multiplayer auction game in an 80s arcade shell. Redis Pub/Sub fans rooms out across server instances.",
@@ -135,6 +146,7 @@ export const projects: Project[] = [
   },
   {
     slug: "url-shortener",
+    areas: ["Full-stack"],
     title: "URL Shortener",
     tagline: "Link shortener with auth, caching and click analytics.",
     blurb: "Deployed link shortener with JWT auth, Redis caching, GeoIP click analytics and a Chrome extension.",
@@ -144,6 +156,7 @@ export const projects: Project[] = [
   },
   {
     slug: "sift",
+    areas: ["Systems"],
     title: "sift",
     tagline: "A streaming record processor for JSONL and CSV.",
     blurb: "A streaming record processor for JSONL and CSV with a small expression language. Zero runtime dependencies.",

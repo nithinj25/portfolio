@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProjectLinks, ProjectMedia, TechTags } from "@/components/ProjectCard";
 import { ArrowLeft } from "@/components/icons";
+import { site } from "@/data/site";
 import { getProject, projects } from "@/lib/projects";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -37,7 +38,7 @@ export default async function ProjectPage({ params }: Props) {
       <header className="rise mt-8" style={{ "--i": 1 } as React.CSSProperties}>
         <p className="font-mono text-xs text-faint">{p.year}</p>
         <h1 className="mt-3 text-balance font-serif text-[2.75rem] leading-[1.05] tracking-tight">{p.title}</h1>
-        <p className="mt-4 text-pretty text-lg leading-relaxed text-muted">{p.blurb}</p>
+        <p className="mt-4 max-w-[68ch] text-pretty text-lg leading-relaxed text-muted">{p.blurb}</p>
         {p.metric && <p className="mt-4 font-mono text-sm text-accent">{p.metric}</p>}
         <div className="mt-5">
           <ProjectLinks p={p} />
@@ -51,12 +52,13 @@ export default async function ProjectPage({ params }: Props) {
         <ProjectMedia p={p} eager />
       </div>
 
+      {(p.details || site.showTodos) && (
       <section className="rise mt-10" style={{ "--i": 3 } as React.CSSProperties} aria-labelledby="details-title">
         <h2 id="details-title" className="font-serif text-[1.75rem] leading-none tracking-tight">
           How it works
         </h2>
         {p.details ? (
-          <ul className="mt-5 space-y-3 text-[1.0625rem] leading-relaxed text-muted">
+          <ul className="mt-5 max-w-[68ch] space-y-3 text-[1.0625rem] leading-relaxed text-muted">
             {p.details.map((d) => (
               <li key={d} className="flex gap-3">
                 <span aria-hidden className="mt-[0.7em] size-1.5 shrink-0 rounded-full bg-accent" />
@@ -70,6 +72,7 @@ export default async function ProjectPage({ params }: Props) {
           </p>
         )}
       </section>
+      )}
 
       <section className="mt-10" aria-labelledby="tech-title">
         <h2 id="tech-title" className="mb-4 font-mono text-[11px] uppercase tracking-widest text-faint">

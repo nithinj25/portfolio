@@ -79,6 +79,46 @@ export const CodeIcon = (p: P) => (
   </svg>
 );
 
+export const ServerIcon = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3.5" y="4" width="17" height="6.5" rx="1.5" />
+    <rect x="3.5" y="13.5" width="17" height="6.5" rx="1.5" />
+    <path d="M7 7.25h.01M7 16.75h.01M11 7.25h5M11 16.75h5" />
+  </svg>
+);
+
+export const LayoutIcon = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3.5" y="4" width="17" height="16" rx="2" />
+    <path d="M3.5 9h17M9.5 9v11" />
+  </svg>
+);
+
+export const DatabaseIcon = (p: P) => (
+  <svg {...base(p)}>
+    <ellipse cx="12" cy="6" rx="7.5" ry="3" />
+    <path d="M4.5 6v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3V6M4.5 12v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6" />
+  </svg>
+);
+
+export const SparkIcon = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 3.5 13.8 9l5.7 1.9-5.7 1.9L12 18.5l-1.8-5.7L4.5 10.9 10.2 9 12 3.5ZM18.5 16.5v4M16.5 18.5h4" />
+  </svg>
+);
+
+export const CloudIcon = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96 6 6 0 0 1 11.5 1.5A3.75 3.75 0 0 1 17.5 18.5H7Z" />
+  </svg>
+);
+
+export const ArrowUp = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 19V5m-6 6 6-6 6 6" />
+  </svg>
+);
+
 export const SunIcon = (p: P) => (
   <svg {...base(p)}>
     <circle cx="12" cy="12" r="4" />

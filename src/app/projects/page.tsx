@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ProjectCard from "@/components/ProjectCard";
+import ProjectGrid from "@/components/ProjectGrid";
 import { site } from "@/data/site";
 import { projects } from "@/lib/projects";
 
@@ -24,13 +24,9 @@ export default function ProjectsPage() {
         </p>
       </header>
 
-      <ul className="rise mt-10 grid gap-4 sm:grid-cols-2" style={{ "--i": 1 } as React.CSSProperties}>
-        {projects.map((p) => (
-          <li key={p.slug}>
-            <ProjectCard p={p} />
-          </li>
-        ))}
-      </ul>
+      <div className="rise mt-10" style={{ "--i": 1 } as React.CSSProperties}>
+        <ProjectGrid projects={projects} />
+      </div>
     </div>
   );
 }

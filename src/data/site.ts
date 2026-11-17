@@ -31,6 +31,10 @@ export const site = {
   },
   // Shows a GitHub contribution heatmap under "Stack". When on, each visitor's
   // browser asks github-contributions-api.jogruber.de for your public activity.
+  // Placeholders for things you have not filled in yet (experience, missing
+  // social links, project screenshots, unlinked heatmaps) show as dashed TODO
+  // slots. Set this to false to hide them all, so the site looks finished.
+  showTodos: true,
   // TODO: set to true to link the GitHub heatmap in the Activity section.
   showGithubActivity: false,
   // TODO: your LeetCode username, to link the LeetCode heatmap. Empty shows a placeholder.
@@ -40,6 +44,13 @@ export const site = {
 export const about = [
   "I like owning the whole picture: the data model, the WebSocket server, the matching loop, and the pixels on screen. Most of what I build is real-time, and I care about proving it works: load tests, latency percentiles, differential tests.",
   "Lately that has meant a 1v1 mental-arithmetic ladder that stays fair under lag, a lock-free order book in C++17, and LLM agent pipelines that have to answer in production rather than in a notebook.",
+];
+
+// Headline numbers shown beside your name. Each is a measured result from the
+// project's README, so only change one if the project's numbers change.
+export const headlineStats = [
+  { value: "13 ms", label: "p95 at 400 players · MathDuel" },
+  { value: "31 ns", label: "median match · orderbook_cpp" },
 ];
 
 export const focus = ["Real-time systems", "Low-latency C++", "LLM agents & RAG", "Full-stack web"];

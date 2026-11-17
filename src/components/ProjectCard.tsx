@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { site } from "@/data/site";
 import type { Project } from "@/lib/projects";
 import ProjectArt from "./ProjectArt";
 import { ArrowUpRight } from "./icons";
@@ -21,6 +22,10 @@ export function ProjectMedia({ p, eager = false }: { p: Project; eager?: boolean
           />
         ) : p.art ? (
           <ProjectArt kind={p.art} title={p.title} />
+        ) : !site.showTodos ? (
+          <div className="grid size-full place-items-center p-4">
+            <p className="font-serif text-3xl italic text-faint">{p.title}</p>
+          </div>
         ) : (
           <div className="grid size-full place-items-center p-4">
             <p className="rounded-lg border border-dashed border-faint px-3 py-2 text-center font-mono text-[11px] leading-relaxed text-faint">

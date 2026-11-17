@@ -20,6 +20,9 @@ Personal details live in [`src/data/site.ts`](src/data/site.ts) and projects in 
 | `socials.linkedin`, `socials.x` | Profile URLs. Empty ones show as dashed TODO icons. |
 | `experience` | Empty for now, so the section shows one TODO row. Add roles, newest first. |
 | `achievements` | Rows with title, organisation and year. Add a `logo` path to replace the initial. |
+| `showTodos` | `true` shows dashed TODO placeholders for anything not filled in. Set to `false` to hide them all so the site looks finished. |
+| `headlineStats` | The two measured numbers beside your name in the hero. |
+| `leetcode` | Your LeetCode username, for the Activity heatmap (placeholder until set). |
 | `showGithubActivity` | Set to `true` for a contribution heatmap. It is loaded from a third-party API using your GitHub username. |
 
 ### Projects
