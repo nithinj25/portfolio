@@ -61,7 +61,7 @@ export const about = [
 // Headline numbers shown beside your name, from the résumé.
 export const headlineStats = [
   { value: "9.48", label: "CGPA · B.E. AI & ML" },
-  { value: "Top 12", label: "of 180,000+ · EY Techathon" },
+  { value: "Top 12", label: "of 180K+ · EY Techathon" },
 ];
 
 export const focus = ["Real-time systems", "Low-latency C++", "LLM agents & RAG", "Competitive programming"];

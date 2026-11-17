@@ -65,7 +65,7 @@ export default function Nav() {
                 href={l.href}
                 aria-current={onPage ? "page" : undefined}
                 data-active={active}
-                className={`relative rounded-full px-3 py-1.5 text-sm text-muted transition-colors after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-fg data-[active=true]:text-fg data-[active=true]:after:scale-x-100 ${
+                className={`relative rounded-full px-3 py-3 text-sm sm:py-1.5 text-muted transition-colors after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-fg data-[active=true]:text-fg data-[active=true]:after:scale-x-100 ${
                   l.wide ? "hidden sm:block" : ""
                 }`}
               >
@@ -78,10 +78,10 @@ export default function Nav() {
             onClick={() => window.dispatchEvent(new Event(OPEN_COMMAND_MENU))}
             aria-label="Open command menu"
             aria-keyshortcuts="Control+K Meta+K"
-            className="ml-2 flex h-8 items-center gap-2 rounded-full border border-line px-2.5 text-muted transition-colors hover:border-faint hover:text-fg"
+            className="ml-2 flex h-11 items-center gap-2 sm:h-8 rounded-full border border-line px-2.5 text-muted transition-colors hover:border-faint hover:text-fg"
           >
             <SearchIcon width={14} height={14} />
-            <kbd className="hidden font-mono text-[10px] sm:inline">Ctrl K</kbd>
+            <kbd className="hidden font-mono text-[11px] sm:inline">Ctrl K</kbd>
           </button>
           <ThemeToggle />
         </div>

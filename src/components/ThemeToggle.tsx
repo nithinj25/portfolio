@@ -33,7 +33,7 @@ export default function ThemeToggle() {
         const b = e.currentTarget.getBoundingClientRect();
         toggleTheme(b.left + b.width / 2, b.top + b.height / 2);
       }}
-      className="grid size-8 place-items-center rounded-full text-muted transition-colors hover:bg-line/60 hover:text-fg"
+      className="grid size-11 place-items-center sm:size-8 rounded-full text-muted transition-colors hover:bg-line/60 hover:text-fg"
     >
       <SunIcon className="hidden dark:block" />
       <MoonIcon className="dark:hidden" />

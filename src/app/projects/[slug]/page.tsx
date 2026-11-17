@@ -40,7 +40,7 @@ export default async function ProjectPage({ params }: Props) {
           {p.year}
           {p.status && (
           <span
-            className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+            className={`rounded-full px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider ${
               p.status === "Live" ? "bg-good/15 text-good" : "bg-accent/10 text-accent"
             }`}
           >
@@ -86,7 +86,7 @@ export default async function ProjectPage({ params }: Props) {
       )}
 
       <section className="mt-10" aria-labelledby="tech-title">
-        <h2 id="tech-title" className="mb-4 font-mono text-[11px] uppercase tracking-widest text-faint">
+        <h2 id="tech-title" className="mb-4 font-mono text-xs uppercase tracking-widest text-faint">
           Built with
         </h2>
         <TechTags tech={p.tech} />
@@ -95,7 +95,7 @@ export default async function ProjectPage({ params }: Props) {
       <nav aria-label="More projects" className="mt-12 grid gap-3 border-t border-line pt-8 sm:grid-cols-2">
         {prev ? (
           <Link href={`/projects/${prev.slug}`} className="group rounded-2xl border border-line bg-card p-4">
-            <span className="font-mono text-[11px] uppercase tracking-widest text-faint">← Previous</span>
+            <span className="font-mono text-xs uppercase tracking-widest text-faint">← Previous</span>
             <span className="mt-1 block font-medium tracking-tight transition-colors group-hover:text-accent">{prev.title}</span>
           </Link>
         ) : (
@@ -103,7 +103,7 @@ export default async function ProjectPage({ params }: Props) {
         )}
         {next && (
           <Link href={`/projects/${next.slug}`} className="group rounded-2xl border border-line bg-card p-4 sm:text-right">
-            <span className="font-mono text-[11px] uppercase tracking-widest text-faint">Next →</span>
+            <span className="font-mono text-xs uppercase tracking-widest text-faint">Next →</span>
             <span className="mt-1 block font-medium tracking-tight transition-colors group-hover:text-accent">{next.title}</span>
           </Link>
         )}

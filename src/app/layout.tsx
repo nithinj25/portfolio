@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 // Runs before first paint so the saved (or system) theme never flashes.
 const themeScript = `(function(){var t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t})()`;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children, modal }: { children: React.ReactNode; modal: React.ReactNode }) {
   const posts = getAllPosts().map(({ slug, title }) => ({ slug, title }));
   return (
     <html lang="en" data-theme="dark" data-scroll-behavior="smooth" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
@@ -58,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         {/* Room at the end of every page for the landing: the campsite, unobstructed. */}
         <div aria-hidden className="h-[44vh]" />
+        {modal}
         <CommandMenu posts={posts} projects={projects.map(({ slug, title, tagline }) => ({ slug, title, tagline }))} />
       </body>
     </html>

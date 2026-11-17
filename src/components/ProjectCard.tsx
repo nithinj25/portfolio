@@ -28,7 +28,7 @@ export function ProjectMedia({ p, eager = false }: { p: Project; eager?: boolean
           </div>
         ) : (
           <div className="grid size-full place-items-center p-4">
-            <p className="rounded-lg border border-dashed border-faint px-3 py-2 text-center font-mono text-[11px] leading-relaxed text-faint">
+            <p className="rounded-lg border border-dashed border-faint px-3 py-2 text-center font-mono text-xs leading-relaxed text-faint">
               TODO: add screenshot
               <br />
               public/projects/{p.slug}.png
@@ -63,7 +63,7 @@ export function TechTags({ tech }: { tech: string[] }) {
   return (
     <ul className="flex flex-wrap gap-1.5">
       {tech.map((t) => (
-        <li key={t} className="rounded-full border border-line bg-card px-2.5 py-1 font-mono text-[11px] leading-none text-muted">
+        <li key={t} className="rounded-full border border-line bg-card px-2.5 py-1 font-mono text-xs leading-none text-muted">
           {t}
         </li>
       ))}
@@ -71,15 +71,18 @@ export function TechTags({ tech }: { tech: string[] }) {
   );
 }
 
-export default function ProjectCard({ p }: { p: Project }) {
+/** `wide`: media beside the text, for one standout card that spans the row. */
+export default function ProjectCard({ p, wide = false }: { p: Project; wide?: boolean }) {
   return (
-    <Spotlight className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-card transition duration-300 ease-out hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_20px_50px_-28px_var(--accent)] has-[:focus-visible]:border-accent/50 motion-reduce:transform-none">
-      <div className="border-b border-line">
-        <ProjectMedia p={p} />
+    <Spotlight className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-card transition duration-300 ease-out hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_20px_50px_-28px_var(--accent)] has-[:focus-visible]:border-accent/50 motion-reduce:transform-none ${wide ? "sm:grid sm:grid-cols-[1.15fr_1fr]" : ""}`}>
+      <div className={`border-b border-line ${wide ? "sm:flex sm:items-center sm:border-b-0 sm:border-r" : ""}`}>
+        <div className="w-full">
+          <ProjectMedia p={p} />
+        </div>
       </div>
-      <div className="flex flex-1 flex-col p-5">
+      <div className={`flex flex-1 flex-col p-5 ${wide ? "sm:p-7" : ""}`}>
         <div className="flex items-baseline justify-between gap-3">
-          <h3 className="text-lg font-medium tracking-tight">
+          <h3 className={wide ? "font-serif text-3xl leading-tight tracking-tight" : "text-lg font-medium tracking-tight"}>
             {/* The ::after stretches this link over the whole card. */}
             <Link href={`/projects/${p.slug}`} className="after:absolute after:inset-0 after:content-['']">
               {p.title}
@@ -88,7 +91,7 @@ export default function ProjectCard({ p }: { p: Project }) {
           <span className="flex shrink-0 items-center gap-2">
             {p.status && (
             <span
-              className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+              className={`rounded-full px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider ${
                 p.status === "Live" ? "bg-good/15 text-good" : "bg-accent/10 text-accent"
               }`}
             >

@@ -22,7 +22,7 @@ export default function ProjectGrid({ projects }: { projects: Project[] }) {
             className="rounded-full border border-line bg-card px-3.5 py-1.5 text-sm text-muted transition-colors hover:text-fg aria-pressed:border-fg aria-pressed:bg-fg aria-pressed:text-bg"
           >
             {a}
-            <span className="ml-1.5 font-mono text-[11px] opacity-60">{a === "All" ? projects.length : count(a)}</span>
+            <span className="ml-1.5 font-mono text-xs opacity-60">{a === "All" ? projects.length : count(a)}</span>
           </button>
         ))}
       </div>

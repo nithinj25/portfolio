@@ -52,7 +52,7 @@ export default function Heatmap({ source, handle, data }: { source: Source; hand
         </div>
         {!linked && (
           <p className="pointer-events-none absolute inset-0 grid place-items-center px-3 text-center">
-            <span className="max-w-full rounded-lg border border-dashed border-faint bg-card px-3 py-1.5 font-mono text-[11px] leading-relaxed text-muted">
+            <span className="max-w-full rounded-lg border border-dashed border-faint bg-card px-3 py-1.5 font-mono text-xs leading-relaxed text-muted">
               {handle ? `Could not load ${name} activity right now` : `Placeholder · add your ${name} in src/data/site.ts`}
             </span>
           </p>

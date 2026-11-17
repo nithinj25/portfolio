@@ -72,19 +72,19 @@ function PlatformCard({
   children?: React.ReactNode;
 }) {
   return (
-    <Spotlight className="flex h-full flex-col rounded-2xl border border-line bg-card p-5">
+    <Spotlight className="flex h-full flex-col rounded-2xl border border-line bg-card p-5 transition-colors has-[a:hover]:border-accent/50">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="font-mono text-[11px] uppercase tracking-widest text-muted">{name}</h3>
+        <h3 className="font-mono text-xs uppercase tracking-widest text-muted">{name}</h3>
         {url ? (
-          <a href={url} target="_blank" rel="noreferrer" aria-label={`${name} profile`} className="text-muted transition-colors hover:text-accent">
+          <a href={url} target="_blank" rel="noreferrer" aria-label={`${name} profile`} className="text-muted transition-colors after:absolute after:inset-0 after:content-[''] hover:text-accent">
             <ArrowUpRight width={14} height={14} />
           </a>
         ) : (
-          site.showTodos && <span className="font-mono text-[10px] text-faint">TODO: profile link</span>
+          site.showTodos && <span className="font-mono text-[11px] text-faint">TODO: profile link</span>
         )}
       </div>
       <p className="mt-4 font-serif text-4xl leading-none tracking-tight">{value}</p>
-      <p className="mt-1.5 font-mono text-[11px] text-muted">{label}</p>
+      <p className="mt-1.5 font-mono text-xs text-muted">{label}</p>
       {children && <div className="mt-auto pt-5">{children}</div>}
     </Spotlight>
   );
@@ -232,7 +232,7 @@ export default async function Home() {
           <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:mt-2 lg:w-[380px]">
             {stats.map((s) => (
               <div key={s.label} className="flex flex-col-reverse bg-card px-4 py-3.5">
-                <dt className="mt-1 font-mono text-[11px] leading-snug text-muted">{s.label}</dt>
+                <dt className="mt-1 font-mono text-xs leading-snug text-muted">{s.label}</dt>
                 <dd className="font-serif text-3xl leading-none tracking-tight">{s.value}</dd>
               </div>
             ))}
@@ -240,7 +240,7 @@ export default async function Home() {
         </div>
 
         <div className="rise mt-8 flex flex-wrap items-center gap-4 border-y border-line py-4" style={{ "--i": 3 } as React.CSSProperties}>
-          <p className="font-mono text-[11px] uppercase tracking-widest text-faint">Here are my socials</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-faint">Here are my socials</p>
           <SocialLinks />
         </div>
       </section>
@@ -271,15 +271,15 @@ export default async function Home() {
         n={next()}
         title="Projects"
         aside={
-          <Link href="/projects" className="link text-sm text-muted hover:text-fg">
+          <Link href="/projects" className="link relative text-sm text-muted after:absolute after:-inset-3 after:content-[''] hover:text-fg">
             View all {projects.length}
           </Link>
         }
       >
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {featuredProjects.map((p) => (
-            <li key={p.slug}>
-              <ProjectCard p={p} />
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {featuredProjects.map((p, i) => (
+            <li key={p.slug} className={i === 0 ? "sm:col-span-2 lg:col-span-3" : ""}>
+              <ProjectCard p={p} wide={i === 0} />
             </li>
           ))}
         </ul>
@@ -293,7 +293,7 @@ export default async function Home() {
               <li key={h.title} className={i === 0 ? "sm:col-span-2" : ""}>
                 <Spotlight className="flex h-full flex-col rounded-2xl border border-line bg-card p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[11px] text-accent">{h.result}</span>
+                    <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-xs text-accent">{h.result}</span>
                     <span className="font-mono text-xs text-faint">{h.year}</span>
                   </div>
                   <h3 className={`mt-4 tracking-tight ${i === 0 ? "font-serif text-3xl leading-tight" : "text-lg font-medium"}`}>
@@ -322,7 +322,7 @@ export default async function Home() {
       )}
 
       {/* ── DSA & competitive programming ───────────────── */}
-      <Section id="competitive" n={next()} title="DSA & competitive programming">
+      <Section id="competitive" n={next()} title="Competitive programming">
         <p className="-mt-2 mb-6 max-w-[68ch] text-muted">{competitive.note}</p>
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {site.leetcode && (
@@ -343,7 +343,7 @@ export default async function Home() {
                           ["Hard", leetcode.hard, leetcode.totals.hard],
                         ] as const
                       ).map(([d, n, total]) => (
-                        <li key={d} className="grid grid-cols-[3.5rem_1fr_auto] items-center gap-3 font-mono text-[11px] text-muted">
+                        <li key={d} className="grid grid-cols-[3.5rem_1fr_auto] items-center gap-3 font-mono text-xs text-muted">
                           {d}
                           <span className="h-1.5 overflow-hidden rounded-full bg-line">
                             <span className="block h-full rounded-full bg-accent" style={{ width: `${Math.max(2, (n / total) * 100)}%` }} />
@@ -352,7 +352,7 @@ export default async function Home() {
                         </li>
                       ))}
                     </ul>
-                    <p className="mt-4 font-mono text-[11px] text-faint">
+                    <p className="mt-4 font-mono text-xs text-faint">
                       {leetcode.rating ? `Contest rating ${leetcode.rating}` : "No contest rating yet"}
                       {leetcode.topPercent ? ` · top ${leetcode.topPercent}%` : ""}
                       {leetcode.streak ? ` · ${leetcode.streak}-day streak` : ""}
@@ -383,7 +383,7 @@ export default async function Home() {
             return (
               <li key={group.group}>
                 <Spotlight className="h-full rounded-2xl border border-line bg-card p-5">
-                  <h3 className="flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-widest text-muted">
+                  <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-widest text-muted">
                     <span className="grid size-8 place-items-center rounded-lg border border-line bg-bg text-accent">
                       <Icon />
                     </span>
@@ -429,9 +429,9 @@ export default async function Home() {
         <Section
           id="blog"
           n={next()}
-          title="Blogs"
+          title="Blog"
           aside={
-            <Link href="/blog" className="link text-sm text-muted hover:text-fg">
+            <Link href="/blog" className="link relative text-sm text-muted after:absolute after:-inset-3 after:content-[''] hover:text-fg">
               View all
             </Link>
           }

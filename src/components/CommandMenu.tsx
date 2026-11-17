@@ -16,10 +16,10 @@ const SECTIONS = [
   { id: "projects", label: "Projects" },
   { id: "hackathons", label: "Hackathons" },
   { id: "activity", label: "GitHub activity" },
-  { id: "competitive", label: "DSA & competitive programming" },
+  { id: "competitive", label: "Competitive programming" },
   { id: "skills", label: "Skills & technologies" },
   { id: "education", label: "Education" },
-  { id: "blog", label: "Blogs" },
+  { id: "blog", label: "Blog" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -110,7 +110,7 @@ export default function CommandMenu({ posts, projects }: Props) {
             placeholder="Jump to a section, project or post…"
             className="h-12 w-full bg-transparent text-[15px] outline-none placeholder:text-faint"
           />
-          <kbd className="rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-faint">esc</kbd>
+          <kbd className="rounded border border-line px-1.5 py-0.5 font-mono text-[11px] text-faint">esc</kbd>
         </div>
 
         <Command.List className="max-h-80 overflow-y-auto p-2">

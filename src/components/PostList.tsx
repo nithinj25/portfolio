@@ -4,7 +4,7 @@ import { ArrowUpRight } from "./icons";
 import { Spotlight } from "./widgets";
 
 const Draft = () => (
-  <span className="ml-2 rounded-full border border-line px-2 py-0.5 align-middle font-mono text-[10px] uppercase tracking-wider text-muted">
+  <span className="ml-2 rounded-full border border-line px-2 py-0.5 align-middle font-mono text-[11px] uppercase tracking-wider text-muted">
     draft
   </span>
 );
@@ -26,7 +26,7 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
       </h3>
       {post.description && <p className="mt-3 max-w-[60ch] leading-relaxed text-muted">{post.description}</p>}
       <div className="mt-5 flex items-center justify-between gap-4">
-        <p className="font-mono text-[11px] text-faint">{post.tags.map((t) => `#${t}`).join("  ")}</p>
+        <p className="font-mono text-xs text-faint">{post.tags.map((t) => `#${t}`).join("  ")}</p>
         <span className="flex items-center gap-1 text-sm text-muted transition-colors group-hover:text-accent">
           Read <ArrowUpRight width={13} height={13} />
         </span>
@@ -48,7 +48,7 @@ export default function PostList({ posts }: { posts: PostMeta[] }) {
                 {p.draft && <Draft />}
               </h3>
               {p.description && <p className="mt-1 max-w-[68ch] text-sm leading-relaxed text-muted">{p.description}</p>}
-              {p.tags.length > 0 && <p className="mt-2 font-mono text-[11px] text-faint">{p.tags.map((t) => `#${t}`).join("  ")}</p>}
+              {p.tags.length > 0 && <p className="mt-2 font-mono text-xs text-faint">{p.tags.map((t) => `#${t}`).join("  ")}</p>}
             </div>
             <p className="whitespace-nowrap font-mono text-xs text-faint sm:pt-1 sm:text-right">
               <time dateTime={p.date}>{formatDate(p.date, "short")}</time>

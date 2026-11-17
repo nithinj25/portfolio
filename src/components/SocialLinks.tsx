@@ -27,7 +27,7 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
                 rel="noreferrer"
                 aria-label={label}
                 title={label}
-                className="grid size-9 place-items-center rounded-full border border-line bg-bg text-muted transition hover:-translate-y-0.5 hover:border-faint hover:text-fg"
+                className="grid size-11 place-items-center sm:size-9 rounded-full border border-line bg-bg text-muted transition hover:-translate-y-0.5 hover:border-faint hover:text-fg"
               >
                 <Icon />
               </a>
@@ -36,7 +36,7 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
                 role="img"
                 aria-label={`${label} (TODO: link not added yet)`}
                 title={`TODO: add your ${label} link in src/data/site.ts`}
-                className="grid size-9 place-items-center rounded-full border border-dashed border-faint bg-bg text-faint"
+                className="grid size-11 place-items-center sm:size-9 rounded-full border border-dashed border-faint bg-bg text-faint"
               >
                 <Icon />
               </span>

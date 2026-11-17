@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { skyPhase, watchSkyPhase, type SkyPhase } from "@/lib/sky";
 
@@ -162,13 +163,18 @@ const smooth = (v: number) => v * v * (3 - 2 * v);
 export default function WorldBackdrop() {
   const ref = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState<number | null>(null);
+  const pathname = usePathname();
+  // Post pages (and the reader panel) are for reading: the scene holds still.
+  const calm = pathname.startsWith("/blog/");
+  // Comets and the counter only on the home page.
+  const game = pathname === "/";
 
   useEffect(() => {
     const canvas = ref.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
 
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = calm || matchMedia("(prefers-reduced-motion: reduce)").matches;
     const make = () => document.createElement("canvas");
     const layers = { sky: make(), glow: make(), far: make(), mid: make(), near: make() };
     let theme: keyof typeof SCENES = "dark";
@@ -617,7 +623,7 @@ export default function WorldBackdrop() {
       // ── Comets: cold in the high sky, hot near the ground ──
       const heat = clamp01((e - 0.15) / 0.6);
       const rgb = s.cold.map((c, i) => Math.round(c + (s.hot[i] - c) * heat)).join(",");
-      if (t > nextComet) {
+      if (game && t > nextComet) {
         const room = W / 2 - COLUMN_HALF;
         const x = room > 24 ? (Math.random() < 0.5 ? 0 : W / 2 + COLUMN_HALF) + 8 + Math.random() * (room - 16) : 8 + Math.random() * (W - 16);
         comets.push({ x, y: -8, vx: (Math.random() - 0.5) * 26, vy: 34 + Math.random() * 26 });
@@ -744,15 +750,15 @@ export default function WorldBackdrop() {
       removeEventListener("pointerdown", onDown);
       document.documentElement.removeEventListener("pointerleave", onLeave);
     };
-  }, []);
+  }, [calm, game]);
 
   return (
     <>
       <canvas ref={ref} aria-hidden className="pointer-events-none fixed inset-0 -z-10 size-full [image-rendering:pixelated]" />
-      {score !== null && (
+      {score !== null && game && (
         <p
           aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-30 hidden items-center gap-2 rounded-full border border-line bg-card/80 px-3 py-1.5 font-mono text-[11px] text-muted backdrop-blur sm:flex"
+          className="pointer-events-none fixed bottom-4 right-4 z-30 hidden items-center gap-2 rounded-full border border-line bg-card/80 px-3 py-1.5 font-mono text-xs text-muted backdrop-blur sm:flex"
         >
           <span aria-hidden className="text-accent">
             ✦
