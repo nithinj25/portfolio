@@ -5,7 +5,7 @@ import { RssIcon } from "./icons";
 export default function Footer() {
   return (
     <footer className="mt-24">
-      <div className="mx-auto max-w-[800px] px-5">
+      <div className="mx-auto max-w-[920px] px-5">
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6 text-sm text-muted">
         <p>
           © {new Date().getFullYear()} {site.name}

@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from "react";
 //
 // Under prefers-reduced-motion this is a still star field with no comets.
 const S = 3; // screen pixels per scene pixel
-const COLUMN_HALF = 460 / S; // comets avoid the text column when there is room
+const COLUMN_HALF = 540 / S; // comets avoid the text column when there is room
 const REACH = 46; // cursor influence on stars, scene px
 const CATCH_RADIUS = 13;
 const MAX_CAUGHT_STARS = 70;

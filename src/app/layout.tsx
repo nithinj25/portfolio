@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         {/* The veil keeps text readable over the backdrop; the scene shows in full beside and below it. */}
         <div className="veil">
-          <main id="main" className="mx-auto max-w-[800px] px-5">
+          <main id="main" className="mx-auto max-w-[920px] px-5">
             {children}
           </main>
           <Footer />

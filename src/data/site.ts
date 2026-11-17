@@ -31,7 +31,10 @@ export const site = {
   },
   // Shows a GitHub contribution heatmap under "Stack". When on, each visitor's
   // browser asks github-contributions-api.jogruber.de for your public activity.
+  // TODO: set to true to link the GitHub heatmap in the Activity section.
   showGithubActivity: false,
+  // TODO: your LeetCode username, to link the LeetCode heatmap. Empty shows a placeholder.
+  leetcode: "",
 };
 
 export const about = [

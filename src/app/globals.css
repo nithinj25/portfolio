@@ -90,7 +90,7 @@ body {
   position: relative;
   isolation: isolate;
   margin-inline: auto;
-  max-width: 1040px;
+  max-width: 1180px;
   padding-bottom: 7rem;
 }
 .veil::before {

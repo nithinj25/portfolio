@@ -73,6 +73,12 @@ export const SearchIcon = (p: P) => (
   </svg>
 );
 
+export const CodeIcon = (p: P) => (
+  <svg {...base(p)}>
+    <path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14" />
+  </svg>
+);
+
 export const SunIcon = (p: P) => (
   <svg {...base(p)}>
     <circle cx="12" cy="12" r="4" />

@@ -13,6 +13,7 @@ export const OPEN_COMMAND_MENU = "open-command-menu";
 const SECTIONS = [
   { id: "about", label: "About" },
   { id: "stack", label: "Stack" },
+  { id: "activity", label: "Activity" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "achievements", label: "Achievements" },

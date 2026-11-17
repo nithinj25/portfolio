@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Banner from "@/components/Banner";
+import Heatmap from "@/components/Heatmap";
 import PostList from "@/components/PostList";
 import ProjectCard from "@/components/ProjectCard";
 import { FileIcon, GithubIcon, LinkedinIcon, MailIcon, PinIcon, XIcon } from "@/components/icons";
-import { CopyEmail, GithubActivity, LocalTime, Reveal, Spotlight } from "@/components/widgets";
+import { CopyEmail, LocalTime, Reveal, Spotlight } from "@/components/widgets";
 import { about, achievements, experience, focus, site, stack } from "@/data/site";
 import { featuredProjects, projects } from "@/lib/projects";
 import { getAllPosts } from "@/lib/posts";
@@ -114,7 +115,7 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="pt-4">
+      <section className="pt-8">
         <div className="rise">
           <Banner />
         </div>
@@ -207,7 +208,7 @@ export default function Home() {
       </Section>
 
       {/* ── Stack ────────────────────────────────────────── */}
-      <Section id="stack" title={site.showGithubActivity ? "Stack & activity" : "Stack"}>
+      <Section id="stack" title="Stack">
         <dl className="divide-y divide-line border-y border-line">
           {stack.map((row) => (
             <div key={row.group} className="grid gap-2 py-3 sm:grid-cols-[7rem_1fr] sm:items-center">
@@ -225,7 +226,14 @@ export default function Home() {
             </div>
           ))}
         </dl>
-        {site.showGithubActivity && <GithubActivity />}
+      </Section>
+
+      {/* ── Activity: heatmaps (placeholders until linked in site.ts) ── */}
+      <Section id="activity" title="Activity">
+        <div className="grid gap-4">
+          <Heatmap source="github" />
+          <Heatmap source="leetcode" />
+        </div>
       </Section>
 
       {/* ── Experience ───────────────────────────────────── */}

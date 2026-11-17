@@ -8,17 +8,21 @@ import { OPEN_COMMAND_MENU } from "./CommandMenu";
 import ThemeToggle from "./ThemeToggle";
 import { SearchIcon } from "./icons";
 
-// `section` is the home page section that lights this link up while it is in view.
+// `section` is the home page section that lights a link up while it is in view.
+// Links whose href starts with "/#" jump to a section; the others open a page.
+// `wide` links are hidden on small screens to keep the bar from crowding.
 const links = [
-  { href: "/projects", label: "Projects", section: "projects" },
-  { href: "/blog", label: "Blog", section: "blog" },
+  { href: "/#about", label: "About", section: "about", wide: true },
+  { href: "/projects", label: "Projects", section: "projects", wide: false },
+  { href: "/blog", label: "Blog", section: "blog", wide: false },
+  { href: "/#contact", label: "Contact", section: "contact", wide: true },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
   const [inView, setInView] = useState<string | null>(null);
 
-  // Scroll-spy on the home page: track which linked section crosses the middle band.
+  // Scroll-spy on the home page: the last linked section to cross the middle band wins.
   useEffect(() => {
     setInView(null);
     if (pathname !== "/") return;
@@ -29,7 +33,7 @@ export default function Nav() {
           if (e.isIntersecting) visible.add(e.target.id);
           else visible.delete(e.target.id);
         }
-        setInView(links.find((l) => visible.has(l.section))?.section ?? null);
+        setInView([...links].reverse().find((l) => visible.has(l.section))?.section ?? null);
       },
       { rootMargin: "-35% 0px -55% 0px" },
     );
@@ -41,19 +45,19 @@ export default function Nav() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-40">
-      {/* Only the bar itself is frosted, so the backdrop stays visible on either side of it. */}
+    // A floating pill, the same width as the content below it.
+    <header className="sticky top-3 z-40 px-5">
       <nav
         aria-label="Main"
-        className="mx-auto flex h-14 max-w-[840px] items-center justify-between rounded-b-2xl bg-bg/80 px-10 backdrop-blur-md max-[880px]:rounded-none max-[880px]:px-5"
+        className="mx-auto flex h-12 max-w-[880px] items-center justify-between rounded-full border border-line bg-card/75 pl-5 pr-2 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.6)] backdrop-blur-md"
       >
         <Link href="/" className="font-serif text-xl italic tracking-tight" aria-label={`${site.name}, home`}>
           {site.name.toLowerCase()}
           <span className="text-accent">.</span>
         </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           {links.map((l) => {
-            const onPage = pathname.startsWith(l.href);
+            const onPage = !l.href.startsWith("/#") && pathname.startsWith(l.href);
             const active = onPage || inView === l.section;
             return (
               <Link
@@ -61,7 +65,9 @@ export default function Nav() {
                 href={l.href}
                 aria-current={onPage ? "page" : undefined}
                 data-active={active}
-                className="relative rounded-full px-3 py-1.5 text-sm text-muted transition-colors after:absolute after:inset-x-3 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-fg data-[active=true]:text-fg data-[active=true]:after:scale-x-100"
+                className={`relative rounded-full px-3 py-1.5 text-sm text-muted transition-colors after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-fg data-[active=true]:text-fg data-[active=true]:after:scale-x-100 ${
+                  l.wide ? "hidden sm:block" : ""
+                }`}
               >
                 {l.label}
               </Link>
@@ -72,7 +78,7 @@ export default function Nav() {
             onClick={() => window.dispatchEvent(new Event(OPEN_COMMAND_MENU))}
             aria-label="Open command menu"
             aria-keyshortcuts="Control+K Meta+K"
-            className="ml-1 flex h-8 items-center gap-2 rounded-full border border-line px-2.5 text-muted transition-colors hover:border-faint hover:text-fg"
+            className="ml-2 flex h-8 items-center gap-2 rounded-full border border-line px-2.5 text-muted transition-colors hover:border-faint hover:text-fg"
           >
             <SearchIcon width={14} height={14} />
             <kbd className="hidden font-mono text-[10px] sm:inline">Ctrl K</kbd>

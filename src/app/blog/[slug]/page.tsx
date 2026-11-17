@@ -42,7 +42,7 @@ export default async function PostPage({ params }: Props) {
   const older = all[i + 1];
 
   return (
-    <article className="pt-10">
+    <article className="mx-auto max-w-[760px] pt-10">
       <Link href="/blog" className="rise inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-fg">
         <ArrowLeft width={14} height={14} /> All posts
       </Link>
