@@ -17,7 +17,7 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
         {children}
       </main>
       <footer className="mt-24 border-t border-line">
-        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-4 px-5 py-8 text-sm text-muted">
+        <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-4 px-5 py-8 text-sm text-muted">
           <p>
             Notes by{" "}
             <Link href="/" className="link text-fg">

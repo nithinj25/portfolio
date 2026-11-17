@@ -15,7 +15,7 @@ export default function BlogIndex() {
   const years = [...new Set(rest.map((p) => p.date.slice(0, 4)))];
 
   return (
-    <div className="mx-auto max-w-[760px] px-5 pt-14 sm:pt-20">
+    <div className="mx-auto max-w-[860px] px-5 pt-14 sm:pt-20">
       <header>
         <h1 className="font-serif text-5xl leading-none tracking-tight sm:text-6xl">Notes</h1>
         <p className="mt-4 max-w-[52ch] text-lg leading-relaxed text-muted">

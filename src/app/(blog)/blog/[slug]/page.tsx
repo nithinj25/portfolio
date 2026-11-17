@@ -53,7 +53,7 @@ export default async function PostPage({ params }: Props) {
   return (
     <article className="reading px-5">
       {/* ── Header ───────────────────────────────────────── */}
-      <header className="mx-auto max-w-[760px] pt-14 text-center sm:pt-20">
+      <header className="mx-auto max-w-[860px] pt-14 text-center sm:pt-20">
         {post.tags.length > 0 && (
           <p className="flex flex-wrap justify-center gap-2">
             {post.tags.map((t) => (
@@ -86,21 +86,21 @@ export default async function PostPage({ params }: Props) {
 
       {/* ── Cover (optional: `cover:` in the post's front matter) ── */}
       {post.cover && (
-        <figure className="mx-auto mt-12 max-w-[1080px]">
+        <figure className="mx-auto mt-12 max-w-[1180px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={post.cover} alt={post.coverAlt ?? ""} className="w-full rounded-2xl border border-line object-cover" />
         </figure>
       )}
 
       {/* ── Body, with "On this page" beside it on wide screens ── */}
-      <div className="mx-auto mt-14 grid max-w-[1180px] grid-cols-[minmax(0,1fr)] gap-12 xl:grid-cols-[220px_minmax(0,680px)_220px] xl:justify-center">
+      <div className="mx-auto mt-14 grid max-w-[1320px] grid-cols-[minmax(0,1fr)] gap-12 xl:grid-cols-[200px_minmax(0,780px)_200px] xl:justify-center">
         <aside className="hidden xl:block">
           <div className="sticky top-24">
             <TableOfContents headings={post.headings} />
           </div>
         </aside>
 
-        <div className="mx-auto w-full min-w-0 max-w-[680px] xl:mx-0">
+        <div className="mx-auto w-full min-w-0 max-w-[780px] xl:mx-0">
           {post.headings.length > 1 && (
             <details className="mb-10 rounded-2xl border border-line bg-card px-5 py-4 xl:hidden">
               <summary className="cursor-pointer font-mono text-xs uppercase tracking-widest text-muted">On this page</summary>

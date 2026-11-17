@@ -118,13 +118,13 @@ body {
   font-size: 2.1rem;
 }
 /* Images break out wider than the text column, with a caption under them. */
-.prose figure {
+.prose figure:not([data-rehype-pretty-code-figure]) {
   margin-block: 2.4em;
 }
 .prose figure img {
   width: 100%;
 }
-.reading .prose figure {
+.reading .prose figure:not([data-rehype-pretty-code-figure]) {
   position: relative;
   left: 50%;
   width: min(960px, calc(100vw - 2.5rem));

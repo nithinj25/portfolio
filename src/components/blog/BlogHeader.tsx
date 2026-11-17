@@ -39,7 +39,7 @@ export default function BlogHeader() {
         hidden ? "-translate-y-full" : ""
       }`}
     >
-      <nav aria-label="Blog" className="mx-auto flex h-14 max-w-[1180px] items-center justify-between gap-4 px-5">
+      <nav aria-label="Blog" className="mx-auto flex h-14 max-w-[1320px] items-center justify-between gap-4 px-5">
         <div className="flex min-w-0 items-center gap-1">
           <Link
             href="/"
