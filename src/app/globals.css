@@ -166,6 +166,15 @@ body {
   width: min(960px, calc(100vw - 2.5rem));
   translate: -50% 0;
 }
+/* With the "On this page" list on the left (xl), grow only to the right,
+   into the empty column, so images never cover the list. */
+@media (min-width: 1280px) {
+  .reading .prose figure:not([data-rehype-pretty-code-figure]) {
+    left: 0;
+    translate: none;
+    width: min(960px, calc(100% + 200px));
+  }
+}
 .prose figcaption {
   margin-top: 0.8em;
   text-align: center;

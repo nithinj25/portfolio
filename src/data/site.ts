@@ -22,9 +22,9 @@ export const site = {
   availabilityText: "Open to internships",
   // Drop a photo in /public (e.g. /avatar.jpg) and put its path here.
   avatar: "",
-  // TODO: put your résumé PDF in /public and set its path (e.g. "/resume.pdf").
-  // Note the PDF includes your phone number, which would then be public.
-  resume: "",
+  // public/resume.pdf is Nithin_res_26_V7.pdf with the phone number removed
+  // (text, icon and link). When you update the résumé, remove it again first.
+  resume: "/resume.pdf",
   // TODO: add your X profile URL. Empty ones show as dashed TODO icons.
   socials: {
     github: "https://github.com/nithinj25",
