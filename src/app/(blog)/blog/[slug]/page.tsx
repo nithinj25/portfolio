@@ -120,6 +120,16 @@ export default async function PostPage({ params }: Props) {
             <div className="prose" dangerouslySetInnerHTML={{ __html: post.html }} />
           </ReadingFocus>
 
+          {post.original && (
+            <p className="mt-12 text-sm text-muted">
+              Originally published on{" "}
+              <a href={post.original} target="_blank" rel="noreferrer" className="text-fg underline decoration-line underline-offset-4 hover:decoration-accent">
+                {post.original.includes("linkedin.com") ? "LinkedIn" : new URL(post.original).hostname}
+              </a>
+              .
+            </p>
+          )}
+
           {/* ── End of post ─────────────────────────────── */}
           <div className="mt-14 border-t border-line pt-8">
             <ShareButtons title={post.title} />

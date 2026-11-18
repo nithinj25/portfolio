@@ -22,6 +22,8 @@ export type PostMeta = {
   /** Optional cover image: `cover: /blog/my-post.png` (file in public/) plus `coverAlt`. */
   cover?: string;
   coverAlt?: string;
+  /** Where the post first appeared, e.g. LinkedIn: `original: https://…`. */
+  original?: string;
 };
 
 export type Heading = { id: string; text: string; level: 2 | 3 };
@@ -71,6 +73,7 @@ function readPost(file: string): PostMeta & { body: string } {
     draft: Boolean(data.draft),
     cover: data.cover ? String(data.cover) : undefined,
     coverAlt: data.coverAlt ? String(data.coverAlt) : undefined,
+    original: data.original ? String(data.original) : undefined,
     body: content,
   };
 }
