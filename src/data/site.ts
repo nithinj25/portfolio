@@ -20,8 +20,8 @@ export const site = {
   email: "nithinjstudent@gmail.com",
   available: true,
   availabilityText: "Open to internships",
-  // Drop a photo in /public (e.g. /avatar.jpg) and put its path here.
-  avatar: "",
+  // Square photo in /public, shown round/rounded at up to 88px.
+  avatar: "/avatar.jpg",
   // public/resume.pdf is Nithin_res_26_V7.pdf with the phone number removed
   // (text, icon and link). When you update the résumé, remove it again first.
   resume: "/resume.pdf",
@@ -194,7 +194,7 @@ export type Platform = { name: string; rating?: string; url?: string };
 export const competitive = {
   note: "Graphs, DP and greedy in C++ STL.",
   platforms: [
-    { name: "CodeChef", rating: "1470", url: "" }, // TODO: profile URL
-    { name: "Codeforces", rating: "1000", url: "" }, // TODO: profile URL
+    { name: "CodeChef", rating: "1470", url: "https://www.codechef.com/users/higgsbosson_25" },
+    { name: "Codeforces", rating: "1000", url: "https://codeforces.com/profile/nithinj326" },
   ] as Platform[],
 };
